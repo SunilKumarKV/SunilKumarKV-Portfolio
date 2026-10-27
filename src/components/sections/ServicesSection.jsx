@@ -1,15 +1,15 @@
 import React from 'react';
 import { SERVICES } from './services/servicesData';
 import ServiceCard from './services/ServiceCard';
+import SectionHeading from '../ui/SectionHeading';
 import { Sparkles, Layers } from 'lucide-react';
 
 /**
  * ServicesSection Component
- * Highlights Sunil's freelance service offerings with Apple/iOS glassmorphism.
+ * Symmetrical 3-Card Grid for Sunil's freelance service offerings.
  */
 export default function ServicesSection() {
   const handleSelectService = () => {
-    // Dispatch custom event to flip ContactSection toggle to 'freelance'
     window.dispatchEvent(
       new CustomEvent('set-contact-intent', { detail: 'freelance' })
     );
@@ -22,42 +22,37 @@ export default function ServicesSection() {
     }
   };
 
+  const disciplineBadge = (
+    <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl ios-glass border border-[var(--border-glass)] text-xs font-mono text-electric-blue">
+      <Layers className="w-3.5 h-3.5 text-electric-blue flex-shrink-0" />
+      <span>3 Core Disciplines</span>
+    </div>
+  );
+
   return (
-    <section id="services" className="scroll-mt-28 space-y-10 relative z-10">
-      {/* Section Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-[var(--border-glass)]">
-        <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono bg-electric-blue/10 border border-electric-blue/20 text-electric-blue backdrop-blur-md">
-            <Sparkles className="w-3.5 h-3.5 text-electric-blue" />
-            <span>Strategic Solutions & Contract Engineering</span>
-          </div>
+    <section 
+      id="services" 
+      className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24 scroll-mt-20 relative space-y-10"
+    >
+      {/* Standard Section Heading */}
+      <SectionHeading
+        eyebrow="Strategic Solutions & Contract Engineering"
+        eyebrowIcon={Sparkles}
+        title="Services & Solutions"
+        tagline="Engineered for Performance. Built for Reliability."
+        subtitle="Helping startups, founders, and businesses turn requirements into production web applications and automated workflows."
+        action={disciplineBadge}
+      />
 
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[var(--text-primary)]">
-            Services & Solutions
-            <span className="block text-xl sm:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-electric-blue via-indigo-400 to-emerald mt-1">
-              Engineered for Performance. Built for Reliability.
-            </span>
-          </h2>
-
-          <p className="text-[var(--text-secondary)] text-sm sm:text-base max-w-2xl leading-relaxed">
-            Helping startups, founders, and businesses turn requirements into production web applications and automated workflows.
-          </p>
-        </div>
-
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl ios-glass border border-[var(--border-glass)] text-xs font-mono text-electric-blue self-start md:self-auto">
-          <Layers className="w-3.5 h-3.5 text-electric-blue" />
-          <span>3 Core Disciplines</span>
-        </div>
-      </div>
-
-      {/* 3-Column Service Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* Symmetrical 3-Card Grid (min-w-0 on each column item) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6 items-stretch">
         {SERVICES.map((service) => (
-          <ServiceCard
-            key={service.id}
-            service={service}
-            onSelectService={handleSelectService}
-          />
+          <div key={service.id} className="min-w-0 w-full flex">
+            <ServiceCard
+              service={service}
+              onSelectService={handleSelectService}
+            />
+          </div>
         ))}
       </div>
     </section>

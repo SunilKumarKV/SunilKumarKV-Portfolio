@@ -10,8 +10,9 @@ import {
 
 /**
  * Hero Section
- * 2-Column Desktop Layout (7 cols text / 5 cols full-stack graphic):
- * Features project-first narrative, live proof badges, and seamless theme adaptation.
+ * Strict 12-Column Grid (7 cols text / 5 cols graphic):
+ * Highlights Sunil Kumar K V as Full-Stack Developer | React Specialist,
+ * MCA student, and 3+ years enterprise operations at Reliance Retail.
  */
 export default function Hero() {
   const { theme } = useTheme();
@@ -32,29 +33,29 @@ export default function Hero() {
   return (
     <section 
       id="hero" 
-      className="scroll-mt-28 pt-4 sm:pt-8 pb-8 relative z-10"
+      className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24 scroll-mt-20 relative z-10"
       aria-label="Introduction & Architecture Overview"
     >
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+      <div className="grid grid-cols-1 lg:grid-cols-12 items-center gap-10 lg:gap-12">
         
-        {/* Left Column: Sunil's Narrative & Project-First Content (7 columns on desktop) */}
-        <div className="lg:col-span-7 space-y-6 text-left">
+        {/* Left Column: Narrative & Content (7 columns on desktop, min-w-0) */}
+        <div className="lg:col-span-7 min-w-0 space-y-6 text-left">
           
           {/* Status Badge with Pulsing Emerald Dot */}
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full text-xs font-mono ios-glass border border-[var(--border-glass)] text-[var(--text-secondary)] shadow-sm">
-            <span className="relative flex h-2 w-2">
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full text-xs font-mono ios-glass border border-[var(--border-glass)] text-[var(--text-secondary)] shadow-sm max-w-full overflow-hidden">
+            <span className="relative flex h-2 w-2 flex-shrink-0">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald" />
             </span>
-            <Sparkles className="w-3.5 h-3.5 text-electric-blue" />
-            <span className="tracking-wide">
+            <Sparkles className="w-3.5 h-3.5 text-electric-blue flex-shrink-0" />
+            <span className="tracking-wide truncate">
               Available for Full-Stack Roles & Select Product Contracts
             </span>
           </div>
 
           {/* Headline: Full-Stack Developer | React Specialist with Gradient Accent */}
           <div className="space-y-2">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[var(--text-primary)] leading-[1.12]">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[var(--text-primary)] leading-[1.12] break-words">
               Full-Stack Developer{' '}
               <span className="text-[var(--text-secondary)] font-light">|</span>{' '}
               <span className="text-[var(--text-primary)]">React Specialist</span>
@@ -74,7 +75,7 @@ export default function Hero() {
 
           {/* Sub-headline / Bio Narrative */}
           <p className="text-[var(--text-secondary)] text-base sm:text-lg leading-relaxed max-w-2xl">
-            I'm Sunil Kumar K V, an MCA student and engineer focused on building production-ready web applications, SaaS tools, and responsive interfaces. With 3+ years of enterprise operations experience at Reliance Retail, I bring business reliability and data precision to scalable software.
+            I'm <strong className="text-[var(--text-primary)] font-semibold">Sunil Kumar K V</strong>, an MCA student and engineer focused on building production-ready web applications, SaaS tools, and responsive interfaces. With 3+ years of enterprise operations experience at Reliance Retail, I bring business reliability and data precision to scalable software.
           </p>
 
           {/* Quick Proof Badges (Inline Monospace Pills) */}
@@ -102,9 +103,9 @@ export default function Hero() {
               onClick={(e) => handleSmoothScroll(e, 'projects')}
               className="px-6 py-3 rounded-xl text-sm font-semibold text-white bg-electric-blue hover:bg-blue-500 shadow-[0_0_24px_rgba(59,130,246,0.5)] hover:shadow-[0_0_32px_rgba(59,130,246,0.7)] transition-all duration-200 active:scale-95 flex items-center gap-2 group"
             >
-              <FolderGit2 className="w-4 h-4" />
+              <FolderGit2 className="w-4 h-4 flex-shrink-0" />
               <span>Explore Featured Projects</span>
-              <ArrowRight className="w-3.5 h-3.5 opacity-80 group-hover:translate-x-0.5 transition-transform" />
+              <ArrowRight className="w-3.5 h-3.5 opacity-80 group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
             </a>
 
             <a 
@@ -113,15 +114,15 @@ export default function Hero() {
               className="px-5 py-3 rounded-xl text-sm font-medium text-[var(--text-primary)] ios-glass hover:bg-white/10 border border-[var(--border-glass)] hover:border-white/30 backdrop-blur-md transition-all duration-200 active:scale-95 flex items-center gap-2"
               title="Let's Connect (sunilkumarkv9535@gmail.com)"
             >
-              <Mail className="w-4 h-4 text-electric-blue" />
+              <Mail className="w-4 h-4 text-electric-blue flex-shrink-0" />
               <span>Let's Connect</span>
             </a>
           </div>
 
         </div>
 
-        {/* Right Column: Floating Borderless Full-Stack Graphic Canvas (5 columns on desktop) */}
-        <div className="lg:col-span-5 w-full flex justify-center lg:justify-end">
+        {/* Right Column: Floating Borderless Full-Stack Graphic Canvas (5 columns on desktop, min-w-0) */}
+        <div className="lg:col-span-5 min-w-0 w-full flex justify-center lg:justify-end">
           <HeroGraphic />
         </div>
 
