@@ -8,7 +8,8 @@ export default function ProjectsGrid() {
   const { projects, loading, isFallback, lastSyncTime, refreshProjects } = useGitHubProjects();
 
   return (
-    <section id="work" className="scroll-mt-28 space-y-10">
+    <section id="projects" className="scroll-mt-28 space-y-10 relative">
+      <div id="work" className="absolute -top-28" />
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div className="space-y-2">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono bg-white/[0.04] border border-white/10 text-slate-300 backdrop-blur-md">
