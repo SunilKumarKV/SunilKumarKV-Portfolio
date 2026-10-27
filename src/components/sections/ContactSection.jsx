@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Briefcase, Rocket, Sparkles } from 'lucide-react';
 import ContactForm from './contact/ContactForm';
 import ContactDirectChannels from './contact/ContactDirectChannels';
-import Footer from '../layout/Footer';
 import GlassCard from '../ui/GlassCard';
 
 /**
@@ -94,9 +93,6 @@ export default function ContactSection() {
 
         </div>
       </section>
-
-      {/* Production Footer */}
-      <Footer />
     </div>
   );
 }

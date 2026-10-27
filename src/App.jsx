@@ -8,6 +8,7 @@ import AnimatedSkills from './components/sections/AnimatedSkills';
 import ExperienceSection from './components/sections/ExperienceSection';
 import EducationSection from './components/sections/EducationSection';
 import ContactSection from './components/sections/ContactSection';
+import Footer from './components/layout/Footer';
 import SectionDivider from './components/ui/SectionDivider';
 
 export default function App() {
@@ -56,6 +57,9 @@ export default function App() {
         <ContactSection />
 
       </main>
+
+      {/* Page Footer (Full-width iOS frosted glass) */}
+      <Footer />
     </div>
   );
 }
