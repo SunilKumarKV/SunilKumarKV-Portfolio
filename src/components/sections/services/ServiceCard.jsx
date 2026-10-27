@@ -19,7 +19,7 @@ export default function ServiceCard({ service, onSelectService }) {
   };
 
   return (
-    <GlassCard className="p-6 sm:p-7 flex flex-col justify-between space-y-6 group hover:border-electric-blue/40 transition-all duration-300">
+    <GlassCard className="p-6 sm:p-7 flex flex-col justify-between h-full min-w-0 w-full space-y-6 group hover:border-electric-blue/40 transition-all duration-300">
       <div className="space-y-4">
         {/* Service Badge & Icon */}
         <div className="flex items-center justify-between gap-2">

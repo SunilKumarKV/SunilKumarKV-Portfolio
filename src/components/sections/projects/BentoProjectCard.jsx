@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { ExternalLink, Github, Star, GitFork, Sparkles, Layers } from 'lucide-react';
 
-export default function BentoProjectCard({ project, isFeatured = false }) {
+export default function BentoProjectCard({ project, isFeatured = false, className = '' }) {
   const cardRef = useRef(null);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -37,9 +37,9 @@ export default function BentoProjectCard({ project, isFeatured = false }) {
           : 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)',
         transition: isHovered ? 'transform 0.15s ease-out' : 'transform 0.5s ease-out',
       }}
-      className={`group relative rounded-3xl p-6 transition-all duration-300 overflow-hidden flex flex-col justify-between ios-glass-card ${
-        isFeatured ? 'md:col-span-2 lg:col-span-2' : 'col-span-1'
-      }`}
+      className={`group relative rounded-3xl p-6 transition-all duration-300 overflow-hidden flex flex-col justify-between ios-glass-card min-w-0 w-full ${
+        isFeatured ? 'md:col-span-2 lg:col-span-2' : ''
+      } ${className}`}
     >
       {/* Cursor-Proximity Spotlight */}
       <div

@@ -11,54 +11,57 @@ import ContactSection from './components/sections/ContactSection';
 import Footer from './components/layout/Footer';
 import SectionDivider from './components/ui/SectionDivider';
 
+/**
+ * Root Application Layout
+ * Standardized Apple-grade section rhythm (py-16 sm:py-20 lg:py-24)
+ * with max-w-7xl / custom container constraints and section dividers.
+ */
 export default function App() {
   return (
-    <div className="min-h-screen relative selection:bg-electric-blue/30 selection:text-white transition-colors duration-300">
+    <div className="min-h-screen relative selection:bg-electric-blue/30 selection:text-white transition-colors duration-300 overflow-x-hidden">
       {/* Visual Atmosphere: Fixed AuroraBackground with Drifting Orbs and Architectural Dot Grid */}
       <AuroraBackground />
 
       {/* Sticky Glass Navbar (iOS-grade frosted glass, 24px blur, 1px bottom border) */}
       <Navbar />
 
-      {/* Main Content Container (z-10 relative) */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-20 relative z-10">
-        
-        {/* 2-Column Hero Section */}
+      {/* Main Content Sections (z-10 relative) */}
+      <main className="w-full relative z-10">
+        {/* 1. 12-Column Hero Section */}
         <Hero />
 
         <SectionDivider />
 
-        {/* 1. Projects Section (Asymmetric Bento Grid with GitHub Sync) */}
+        {/* 2. Flagship-First Bento Projects Section */}
         <ProjectsGrid />
 
         <SectionDivider />
 
-        {/* 2. Services & Solutions (Freelance Offerings) */}
+        {/* 3. Services & Solutions (Symmetrical 3-Card Grid) */}
         <ServicesSection />
 
         <SectionDivider />
 
-        {/* 3. Animated Skills Section (Dual Marquee Tickers & Category Bento Matrix) */}
+        {/* 4. Animated Skills Section (Dual Marquee & Category Matrix) */}
         <AnimatedSkills />
 
         <SectionDivider />
 
-        {/* 4. Professional Experience Section (Dual-Audience Timeline) */}
+        {/* 5. Professional Experience Section (Constrained Timeline max-w-4xl) */}
         <ExperienceSection />
 
         <SectionDivider />
 
-        {/* 5. Education & Certifications Section (Dedicated Section) */}
+        {/* 6. Education & Certifications Section (Balanced 2-Col Split max-w-5xl) */}
         <EducationSection />
 
         <SectionDivider />
 
-        {/* 6. Contact Section & Interactive n8n Webhook Dispatch */}
+        {/* 7. Contact Section (2-Col Conversion Layout) */}
         <ContactSection />
-
       </main>
 
-      {/* Page Footer (Full-width iOS frosted glass) */}
+      {/* Standard Full-Width Page Footer */}
       <Footer />
     </div>
   );

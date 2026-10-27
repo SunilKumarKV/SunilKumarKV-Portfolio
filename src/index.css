@@ -132,6 +132,8 @@
     color-scheme: dark;
     background-color: var(--canvas-bg);
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    max-width: 100vw;
   }
 
   body {

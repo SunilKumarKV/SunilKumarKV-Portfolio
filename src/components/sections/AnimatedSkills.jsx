@@ -4,76 +4,109 @@ import { useGitHubProjects } from '../../hooks/useGitHubProjects';
 import { SKILL_CATEGORIES } from './skills/skillsData';
 import SkillPill from './skills/SkillPill';
 import GlassCard from '../ui/GlassCard';
+import SectionHeading from '../ui/SectionHeading';
 import { Sparkles } from 'lucide-react';
 
 export default function AnimatedSkills() {
   const { projects } = useGitHubProjects();
 
   const getProjectsUsingSkill = (skill) => {
-    if (!projects || projects.length === 0) return [];
-    const searchTerms = [skill.name.toLowerCase(), ...(skill.aliases || [])];
+    if (!projects || !Array.isArray(projects) || projects.length === 0) return [];
+    
+    // Safely extract name and aliases whether skill is a string or an object
+    const skillName = (typeof skill === 'string' ? skill : skill?.name || '').toLowerCase();
+    if (!skillName) return [];
+    
+    const aliases = (typeof skill === 'object' && Array.isArray(skill?.aliases) ? skill.aliases : []).map((a) => a.toLowerCase());
+    const searchTerms = [skillName, ...aliases];
+
     return projects.filter((project) =>
-      project.techStack?.some((tech) =>
-        searchTerms.some((term) => tech.toLowerCase().includes(term) || term.includes(tech.toLowerCase()))
-      )
+      project?.techStack?.some((tech) => {
+        if (!tech || typeof tech !== 'string') return false;
+        const techLower = tech.toLowerCase();
+        return searchTerms.some((term) => techLower.includes(term) || term.includes(techLower));
+      })
     );
   };
 
+  const categories = Array.isArray(SKILL_CATEGORIES) ? SKILL_CATEGORIES : [];
+
   return (
-    <section id="skills" className="scroll-mt-28 space-y-12">
-      <div className="text-center space-y-3 max-w-2xl mx-auto">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono bg-white/[0.04] border border-white/10 text-slate-300 backdrop-blur-md">
-          <Sparkles className="w-3.5 h-3.5 text-electric-blue" />
-          <span>Competency Matrix</span>
-        </div>
-        <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white">
-          Technical Fluency
-        </h2>
-        <p className="text-sm sm:text-base text-slate-400">
-          Bridging enterprise operational systems with modern reactive web engineering.
-        </p>
-      </div>
+    <section 
+      id="skills" 
+      className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24 scroll-mt-20 relative space-y-12"
+    >
+      {/* Standard Center-Aligned Heading */}
+      <SectionHeading
+        eyebrow="Competency Matrix"
+        eyebrowIcon={Sparkles}
+        title="Technical Fluency"
+        subtitle="Bridging enterprise operational systems with modern reactive web engineering."
+        align="center"
+      />
 
       {/* Dual Marquee Tickers */}
-      <TechMarquee />
+      <div className="w-full overflow-hidden">
+        <TechMarquee />
+      </div>
 
       {/* 4 Category Bento Matrix */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {SKILL_CATEGORIES.map((category) => {
-          const Icon = category.icon;
+        {categories.map((category, catIndex) => {
+          const Icon = category?.icon;
+          const skillsList = Array.isArray(category?.skills) ? category.skills : [];
+
           return (
-            <GlassCard key={category.id} className="p-6 sm:p-7 space-y-5 flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div 
-                      className="p-2.5 rounded-xl border border-white/10"
-                      style={{ backgroundColor: `${category.color}15`, color: category.color }}
-                    >
-                      <Icon className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-white font-mono">{category.title}</h3>
-                      <span className="text-[11px] font-mono font-medium" style={{ color: category.color }}>
-                        {category.badge}
-                      </span>
+            <div key={category?.id || `cat-${catIndex}`} className="min-w-0 w-full flex">
+              <GlassCard className="p-6 sm:p-7 space-y-5 flex flex-col justify-between w-full min-w-0">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      {Icon && (
+                        <div 
+                          className="p-2.5 rounded-xl border border-[var(--border-glass)]"
+                          style={{ backgroundColor: `${category?.color || '#3B82F6'}15`, color: category?.color || '#3B82F6' }}
+                        >
+                          <Icon className="w-5 h-5" />
+                        </div>
+                      )}
+                      <div>
+                        <h3 className="text-lg font-bold text-[var(--text-primary)] font-mono">
+                          {category?.title || 'Competencies'}
+                        </h3>
+                        {category?.badge && (
+                          <span className="text-[11px] font-mono font-medium" style={{ color: category?.color || '#3B82F6' }}>
+                            {category.badge}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
+                  {category?.description && (
+                    <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                      {category.description}
+                    </p>
+                  )}
                 </div>
-                <p className="text-xs text-slate-300 leading-relaxed">{category.description}</p>
-              </div>
 
-              <div className="flex flex-wrap gap-2 pt-2 border-t border-white/10">
-                {category.skills.map((skill) => (
-                  <SkillPill
-                    key={skill.name}
-                    skill={skill}
-                    matchingProjects={getProjectsUsingSkill(skill)}
-                    isEnterprise={category.id === 'enterprise-ops'}
-                  />
-                ))}
-              </div>
-            </GlassCard>
+                <div className="flex flex-wrap gap-2 pt-2 border-t border-[var(--border-glass)]">
+                  {skillsList.map((skill, skillIndex) => {
+                    const matching = getProjectsUsingSkill(skill);
+                    const pillKey = typeof skill === 'string' ? `${skill}-${skillIndex}` : (skill?.name || `skill-${skillIndex}`);
+
+                    return (
+                      <SkillPill
+                        key={pillKey}
+                        skill={skill}
+                        matchingProjects={matching}
+                        usedInCount={matching.length}
+                        isEnterprise={category?.id === 'enterprise-ops'}
+                      />
+                    );
+                  })}
+                </div>
+              </GlassCard>
+            </div>
           );
         })}
       </div>
