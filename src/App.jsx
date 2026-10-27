@@ -3,6 +3,7 @@ import AuroraBackground from './components/layout/AuroraBackground';
 import Navbar from './components/layout/Navbar';
 import Hero from './components/sections/Hero';
 import ProjectsGrid from './components/sections/ProjectsGrid';
+import ServicesSection from './components/sections/ServicesSection';
 import AnimatedSkills from './components/sections/AnimatedSkills';
 import ExperienceSection from './components/sections/ExperienceSection';
 import EducationSection from './components/sections/EducationSection';
@@ -31,22 +32,27 @@ export default function App() {
 
         <SectionDivider />
 
-        {/* 2. Animated Skills Section (Dual Marquee Tickers & Category Bento Matrix) */}
+        {/* 2. Services & Solutions (Freelance Offerings) */}
+        <ServicesSection />
+
+        <SectionDivider />
+
+        {/* 3. Animated Skills Section (Dual Marquee Tickers & Category Bento Matrix) */}
         <AnimatedSkills />
 
         <SectionDivider />
 
-        {/* 3. Professional Experience Section (Dual-Audience Timeline) */}
+        {/* 4. Professional Experience Section (Dual-Audience Timeline) */}
         <ExperienceSection />
 
         <SectionDivider />
 
-        {/* 4. Education & Certifications Section (Dedicated Section) */}
+        {/* 5. Education & Certifications Section (Dedicated Section) */}
         <EducationSection />
 
         <SectionDivider />
 
-        {/* 5. Contact Section & Interactive n8n Webhook Dispatch */}
+        {/* 6. Contact Section & Interactive n8n Webhook Dispatch */}
         <ContactSection />
 
       </main>
