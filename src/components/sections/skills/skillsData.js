@@ -1,0 +1,65 @@
+import { Layout, Workflow, Cpu, Database } from 'lucide-react';
+
+export const SKILL_CATEGORIES = [
+  {
+    id: 'frontend',
+    title: 'Frontend Engineering',
+    badge: 'Core Focus',
+    description: 'Component architecture, reactive state pipelines, modern ES6+ tooling, and responsive glassmorphic UI.',
+    icon: Layout,
+    color: '#3B82F6',
+    skills: [
+      { name: 'React.js', brandColor: '#61DAFB', aliases: ['react', 'reactjs'] },
+      { name: 'Hooks', brandColor: '#06B6D4', aliases: ['react', 'hooks'] },
+      { name: 'Redux / Context', brandColor: '#764ABC', aliases: ['redux', 'context'] },
+      { name: 'JavaScript (ES6+)', brandColor: '#F7DF1E', aliases: ['javascript', 'js'] },
+      { name: 'HTML5 & CSS3', brandColor: '#E34F26', aliases: ['html', 'css', 'html5', 'css3'] },
+      { name: 'Tailwind CSS', brandColor: '#38BDF8', aliases: ['tailwind', 'tailwindcss'] },
+      { name: 'Vite', brandColor: '#BD34FE', aliases: ['vite'] },
+    ],
+  },
+  {
+    id: 'workflow',
+    title: 'Workflow & Automation',
+    badge: 'Backend & Orchestration',
+    description: 'Node.js services, n8n webhook automation pipelines, RESTful integration, and event-driven backend logic.',
+    icon: Workflow,
+    color: '#10B981',
+    skills: [
+      { name: 'Node.js', brandColor: '#68A063', aliases: ['node', 'nodejs'] },
+      { name: 'Core Java', brandColor: '#F89820', aliases: ['java'] },
+      { name: 'n8n Workflows', brandColor: '#EA580C', aliases: ['n8n', 'workflow', 'automation'] },
+      { name: 'Webhooks', brandColor: '#10B981', aliases: ['webhook', 'api', 'automation'] },
+      { name: 'REST APIs', brandColor: '#E10098', aliases: ['rest', 'api'] },
+    ],
+  },
+  {
+    id: 'core-cs',
+    title: 'Core CS & Systems',
+    badge: 'MCA / BCA Foundations',
+    description: 'Algorithmic thinking, operating system fundamentals, memory structures, and Git version control.',
+    icon: Cpu,
+    color: '#6366F1',
+    skills: [
+      { name: 'C Programming', brandColor: '#00599C', aliases: ['c', 'system'] },
+      { name: 'Operating Systems', brandColor: '#6366F1', aliases: ['os', 'linux'] },
+      { name: 'Data Structures (DSA)', brandColor: '#A855F7', aliases: ['dsa', 'algorithms'] },
+      { name: 'Git & GitHub', brandColor: '#F05032', aliases: ['git', 'github'] },
+    ],
+  },
+  {
+    id: 'enterprise-ops',
+    title: 'Enterprise & Operations (SAP MM)',
+    badge: 'Reliance Retail (3+ Yrs)',
+    description: '3+ years at Reliance Retail Ltd. managing inventory discrepancy (-15%), SKU replenishment (+10-12%), and financial audits.',
+    icon: Database,
+    color: '#0284C7',
+    skills: [
+      { name: 'SAP MM', brandColor: '#0284C7', aliases: ['sap', 'sap-mm', 'materials-management'] },
+      { name: 'SAP CRM', brandColor: '#0369A1', aliases: ['crm', 'sap'] },
+      { name: 'Inventory Optimization', brandColor: '#10B981', aliases: ['inventory', 'retail'] },
+      { name: 'Commercial Operations', brandColor: '#14B8A6', aliases: ['operations', 'commercial'] },
+      { name: 'Financial Reconciliation', brandColor: '#F59E0B', aliases: ['reconciliation', 'audit'] },
+    ],
+  },
+];
