@@ -1,3 +1,5 @@
+import { FEATURED_PRODUCTS } from './featuredProjects';
+
 /**
  * Master Real-Data File: Sunil Kumar K V Portfolio
  * Single source of truth containing verified professional background,
@@ -5,6 +7,7 @@
  */
 
 export const portfolioData = {
+  featuredProducts: FEATURED_PRODUCTS,
   profile: {
     name: "Sunil Kumar K V",
     brandName: "SunilCraft",
