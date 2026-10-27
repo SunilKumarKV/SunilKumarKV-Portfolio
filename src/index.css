@@ -4,7 +4,9 @@
 
 @layer base {
   :root {
-    /* Glassmorphism Variables */
+    --font-primary: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+    /* Base Glassmorphism Variables */
     --glass-blur-radius: 12px; /* corresponds to backdrop-blur-md */
     --glass-bg: rgba(15, 23, 42, 0.65);
     --glass-border-color: rgba(255, 255, 255, 0.08);
@@ -17,6 +19,11 @@
       rgba(16, 185, 129, 0.3) 100%
     );
     --specular-border-highlight: rgba(255, 255, 255, 0.35);
+
+    /* Dark Theme Default Canvas */
+    --canvas-bg: #0B0F19;
+    --canvas-text: #F8FAFC;
+    --canvas-card: #111827;
 
     /* Color Tokens */
     --color-slate-950: #0B0F19;
@@ -31,19 +38,288 @@
     --scrollbar-thumb-hover: #3B82F6;
   }
 
-  /* Default Dark Mode Setting */
+  /* ==================== THEME DEFINITIONS ==================== */
+  /* 1. Light Mode: Crisp white/slate-50 canvas, dark text, clean frosted white glass */
+  html.theme-light, [data-theme="light"] {
+    color-scheme: light;
+    --canvas-bg: #F8FAFC;
+    --canvas-text: #0F172A;
+    --canvas-card: #FFFFFF;
+    --glass-bg: rgba(255, 255, 255, 0.92);
+    --glass-border-color: rgba(15, 23, 42, 0.12);
+    --specular-border-gradient: linear-gradient(
+      135deg,
+      rgba(37, 99, 235, 0.4) 0%,
+      rgba(16, 185, 129, 0.4) 100%
+    );
+    --specular-border-highlight: rgba(37, 99, 235, 0.2);
+    --color-slate-950: #F8FAFC;
+    --color-card-surface: #FFFFFF;
+    --color-electric-blue: #2563EB;
+    --color-emerald: #059669;
+    --color-indigo: #4F46E5;
+    --scrollbar-track: #F1F5F9;
+    --scrollbar-thumb: #CBD5E1;
+    --scrollbar-thumb-hover: #2563EB;
+  }
+
+  /* 2. Pure Black Mode: Pitch-black canvas #000000, stark white text, true black glass #0A0A0A */
+  html.theme-pure-black, [data-theme="pure-black"] {
+    color-scheme: dark;
+    --canvas-bg: #000000;
+    --canvas-text: #FFFFFF;
+    --canvas-card: #0A0A0A;
+    --glass-bg: rgba(10, 10, 10, 0.92);
+    --glass-border-color: rgba(255, 255, 255, 0.18);
+    --specular-border-gradient: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.6) 0%,
+      rgba(148, 163, 184, 0.35) 50%,
+      rgba(255, 255, 255, 0.15) 100%
+    );
+    --specular-border-highlight: rgba(255, 255, 255, 0.45);
+    --color-slate-950: #000000;
+    --color-card-surface: #0A0A0A;
+    --color-electric-blue: #38BDF8;
+    --color-emerald: #F1F5F9;
+    --color-indigo: #94A3B8;
+    --scrollbar-track: #000000;
+    --scrollbar-thumb: #262626;
+    --scrollbar-thumb-hover: #525252;
+  }
+
+  /* 3. Cyberpunk Mode: Obsidian black #05050A, electric neon pink & cyan accents */
+  html.theme-cyberpunk, [data-theme="cyberpunk"] {
+    color-scheme: dark;
+    --canvas-bg: #05050A;
+    --canvas-text: #FDFEFE;
+    --canvas-card: rgba(13, 10, 26, 0.88);
+    --glass-bg: rgba(13, 10, 26, 0.85);
+    --glass-border-color: rgba(255, 42, 109, 0.35);
+    --specular-border-gradient: linear-gradient(
+      135deg,
+      rgba(255, 42, 109, 0.75) 0%,
+      rgba(5, 217, 232, 0.75) 100%
+    );
+    --specular-border-highlight: rgba(255, 42, 109, 0.5);
+    --color-slate-950: #05050A;
+    --color-card-surface: #0D0A1A;
+    --color-electric-blue: #05D9E8;
+    --color-emerald: #FF2A6D;
+    --color-indigo: #9B5DE5;
+    --scrollbar-track: #05050A;
+    --scrollbar-thumb: #2D1B4E;
+    --scrollbar-thumb-hover: #FF2A6D;
+  }
+
+  /* 4. Deep Dark Mode (Default): Rich midnight slate #0B0F19, electric blue & emerald */
+  html.theme-dark, [data-theme="dark"] {
+    color-scheme: dark;
+    --canvas-bg: #0B0F19;
+    --canvas-text: #F8FAFC;
+    --canvas-card: #111827;
+    --glass-bg: rgba(15, 23, 42, 0.65);
+    --glass-border-color: rgba(255, 255, 255, 0.08);
+    --color-slate-950: #0B0F19;
+    --color-card-surface: #111827;
+    --color-electric-blue: #3B82F6;
+    --color-emerald: #10B981;
+    --color-indigo: #6366F1;
+  }
+
+  /* Default HTML & Body Settings */
   html {
     color-scheme: dark;
-    background-color: #0B0F19;
+    background-color: var(--canvas-bg);
     scroll-behavior: smooth;
   }
 
   body {
-    background-color: #0B0F19;
-    color: #F8FAFC;
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--canvas-bg);
+    color: var(--canvas-text);
+    font-family: var(--font-primary) !important;
     min-height: 100vh;
     overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* Global typography inheritance */
+  .font-sans,
+  button,
+  input,
+  textarea,
+  select {
+    font-family: var(--font-primary);
+  }
+
+  /* Monospace & Terminal Font Modes */
+  [data-font="vt323"] body,
+  [data-font="vt323"] *,
+  [data-font="vt323"] button,
+  [data-font="vt323"] input {
+    font-family: 'VT323', ui-monospace, monospace !important;
+    letter-spacing: 0.04em;
+  }
+
+  [data-font="sharetech"] body,
+  [data-font="sharetech"] *,
+  [data-font="sharetech"] button,
+  [data-font="sharetech"] input {
+    font-family: 'Share Tech Mono', ui-monospace, monospace !important;
+    letter-spacing: 0.02em;
+  }
+
+  [data-font="jetbrains"] body,
+  [data-font="jetbrains"] *,
+  [data-font="jetbrains"] button,
+  [data-font="jetbrains"] input {
+    font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+  }
+
+  [data-font="fira"] body,
+  [data-font="fira"] *,
+  [data-font="fira"] button,
+  [data-font="fira"] input {
+    font-family: 'Fira Code', ui-monospace, monospace !important;
+  }
+
+  /* ==================== THEME SECTION & CARD OVERRIDES ==================== */
+  /* Light Theme High-Contrast Overrides */
+  html.theme-light body {
+    background-color: #F8FAFC !important;
+    color: #0F172A !important;
+  }
+
+  html.theme-light .glass-card,
+  html.theme-light .frosted-glass,
+  html.theme-light .specular-border-box,
+  html.theme-light [class*="bg-slate-900"],
+  html.theme-light [class*="bg-slate-950"],
+  html.theme-light [class*="bg-white/5"],
+  html.theme-light [class*="bg-white/[0.04]"],
+  html.theme-light [class*="bg-white/[0.05]"],
+  html.theme-light [class*="bg-white/[0.06]"] {
+    background-color: rgba(255, 255, 255, 0.94) !important;
+    border-color: rgba(15, 23, 42, 0.12) !important;
+    color: #0F172A !important;
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06) !important;
+  }
+
+  html.theme-light h1,
+  html.theme-light h2,
+  html.theme-light h3,
+  html.theme-light h4 {
+    color: #0F172A !important;
+  }
+
+  html.theme-light p {
+    color: #334155 !important;
+  }
+
+  html.theme-light header {
+    background-color: rgba(255, 255, 255, 0.92) !important;
+    border-bottom-color: rgba(15, 23, 42, 0.1) !important;
+  }
+
+  html.theme-light header .text-white,
+  html.theme-light header .text-slate-100 {
+    color: #0F172A !important;
+  }
+
+  html.theme-light .text-white,
+  html.theme-light .text-slate-100,
+  html.theme-light .text-slate-200 {
+    color: #0F172A !important;
+  }
+
+  html.theme-light .text-slate-300,
+  html.theme-light .text-slate-400 {
+    color: #475569 !important;
+  }
+
+  html.theme-light input,
+  html.theme-light textarea,
+  html.theme-light select {
+    background-color: #FFFFFF !important;
+    color: #0F172A !important;
+    border-color: rgba(15, 23, 42, 0.2) !important;
+  }
+
+  html.theme-light [class*="border-white/"] {
+    border-color: rgba(15, 23, 42, 0.12) !important;
+  }
+
+  html.theme-light [class*="border-slate-800"],
+  html.theme-light [class*="border-slate-700"] {
+    border-color: rgba(15, 23, 42, 0.15) !important;
+  }
+
+  /* Pure Black Theme Stark Contrast Overrides */
+  html.theme-pure-black body {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+  }
+
+  html.theme-pure-black .glass-card,
+  html.theme-pure-black .frosted-glass,
+  html.theme-pure-black .specular-border-box,
+  html.theme-pure-black [class*="bg-slate-900"],
+  html.theme-pure-black [class*="bg-slate-950"] {
+    background-color: #0A0A0A !important;
+    border-color: rgba(255, 255, 255, 0.18) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.95) !important;
+  }
+
+  html.theme-pure-black header {
+    background-color: rgba(0, 0, 0, 0.92) !important;
+    border-bottom-color: rgba(255, 255, 255, 0.15) !important;
+  }
+
+  html.theme-pure-black input,
+  html.theme-pure-black textarea,
+  html.theme-pure-black select {
+    background-color: #0A0A0A !important;
+    color: #FFFFFF !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+  }
+
+  /* Cyberpunk Theme Neon Polish Overrides */
+  html.theme-cyberpunk body {
+    background-color: #05050A !important;
+    color: #FDFEFE !important;
+  }
+
+  html.theme-cyberpunk .glass-card,
+  html.theme-cyberpunk .frosted-glass,
+  html.theme-cyberpunk [class*="bg-slate-900"],
+  html.theme-cyberpunk [class*="bg-slate-950"] {
+    background-color: rgba(13, 10, 26, 0.88) !important;
+    border-color: rgba(255, 42, 109, 0.35) !important;
+    box-shadow: 0 0 25px rgba(255, 42, 109, 0.15) !important;
+  }
+
+  html.theme-cyberpunk p {
+    color: #E2E8F0 !important;
+  }
+
+  html.theme-cyberpunk header {
+    background-color: rgba(5, 5, 10, 0.9) !important;
+    border-bottom-color: rgba(255, 42, 109, 0.35) !important;
+    box-shadow: 0 4px 30px rgba(255, 42, 109, 0.15) !important;
+  }
+
+  html.theme-cyberpunk .text-electric-blue {
+    color: #05D9E8 !important;
+  }
+
+  html.theme-cyberpunk .text-emerald {
+    color: #FF2A6D !important;
+  }
+
+  html.theme-cyberpunk .bg-electric-blue {
+    background-color: #FF2A6D !important;
+    box-shadow: 0 0 24px rgba(255, 42, 109, 0.5) !important;
   }
 
   /* Standard & WebKit Custom Scrollbar */
@@ -74,6 +350,23 @@
 }
 
 @layer utilities {
+  /* Apple / iOS-Grade Glassmorphism Utilities */
+  .ios-glass {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%), var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(190%);
+    -webkit-backdrop-filter: blur(20px) saturate(190%);
+    border: 1px solid var(--glass-border-color);
+    box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.12), 0 12px 32px 0 rgba(0, 0, 0, 0.25);
+  }
+
+  .ios-glass-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.015) 100%), var(--glass-bg);
+    backdrop-filter: blur(24px) saturate(190%);
+    -webkit-backdrop-filter: blur(24px) saturate(190%);
+    border: 1px solid var(--glass-border-color);
+    box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.12), 0 16px 40px -8px rgba(0, 0, 0, 0.3);
+  }
+
   /* Frosted Glass Utilities using Base Variables */
   .frosted-glass {
     background: var(--glass-bg);
@@ -195,5 +488,172 @@
     transform: translate(-100px, 50px) scale(1.15);
   }
 }
+
+/* Floating Animations for Interactive Badges */
+@keyframes float-badge-1 {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(1.5deg);
+  }
+}
+
+@keyframes float-badge-2 {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-14px) rotate(-2deg);
+  }
+}
+
+@keyframes float-badge-3 {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(-1.5deg);
+  }
+}
+
+@keyframes float-badge-4 {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(2deg);
+  }
+}
+
+.animate-float-1 {
+  animation: float-badge-1 5s ease-in-out infinite;
+}
+
+.animate-float-2 {
+  animation: float-badge-2 6.5s ease-in-out infinite;
+}
+
+.animate-float-3 {
+  animation: float-badge-3 5.5s ease-in-out infinite;
+}
+
+.animate-float-4 {
+  animation: float-badge-4 7s ease-in-out infinite;
+}
+
+/* SVG Flow & Orbit Animations */
+@keyframes dash-stream {
+  from {
+    stroke-dashoffset: 48;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes dash-stream-reverse {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: 48;
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-reverse-slow {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes core-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    r: 16px;
+    opacity: 0.8;
+  }
+  100% {
+    r: 32px;
+    opacity: 0;
+  }
+}
+
+.animate-dash-stream {
+  animation: dash-stream 2.2s linear infinite;
+}
+
+.animate-dash-stream-reverse {
+  animation: dash-stream-reverse 2.5s linear infinite;
+}
+
+.animate-spin-orbit {
+  animation: spin-slow 24s linear infinite;
+  transform-origin: 250px 210px;
+}
+
+.animate-spin-atom {
+  animation: spin-slow 16s linear infinite;
+  transform-origin: center;
+}
+
+.animate-core-pulse {
+  animation: core-pulse 3s ease-in-out infinite;
+  transform-origin: center;
+}
+
+/* Accessibility: Respect Reduced Motion Preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .animate-aurora-1,
+  .animate-aurora-2,
+  .animate-aurora-3,
+  .animate-marquee-left,
+  .animate-marquee-right,
+  .animate-float-1,
+  .animate-float-2,
+  .animate-float-3,
+  .animate-float-4,
+  .animate-dash-stream,
+  .animate-dash-stream-reverse,
+  .animate-spin-orbit,
+  .animate-spin-atom,
+  .animate-core-pulse {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+
 
 
