@@ -15,6 +15,7 @@ export default function Navbar() {
 
   const navLinks = [
     { name: 'Work', href: '#work' },
+    { name: 'Services', href: '#services' },
     { name: 'Skills', href: '#skills' },
     { name: 'Experience', href: '#experience' },
     { name: 'Education', href: '#education' },
@@ -26,7 +27,7 @@ export default function Navbar() {
       setIsScrolled(window.scrollY > 20);
 
       // Section scroll spy
-      const sections = ['work', 'projects', 'skills', 'experience', 'education', 'contact'];
+      const sections = ['work', 'projects', 'services', 'skills', 'experience', 'education', 'contact'];
       const scrollPosition = window.scrollY + 120;
 
       for (const section of sections) {
