@@ -12,8 +12,9 @@ export function useGitHubProjects() {
   const [isFallback, setIsFallback] = useState(false);
   const [fromCache, setFromCache] = useState(false);
   const [error, setError] = useState(null);
-  const isFetchingRef = useRef(false);
+  const inFlightRequestRef = useRef(false);
   const isMountedRef = useRef(true);
+  const timerRef = useRef(null);
 
   const fetchProjects = useCallback(async (forceRefresh = false) => {
     // Prevent overlapping concurrent requests
@@ -27,14 +28,17 @@ export function useGitHubProjects() {
 
     try {
       const result = await syncGitHubPortfolioRepos({ forceRefresh });
+      if (!isMountedRef.current) return;
 
       if (!isMountedRef.current) return;
 
       if (result.projects && result.projects.length > 0) {
         setProjects(result.projects);
-        setIsFallback(Boolean(result.isRateLimited || result.isFallback));
-        setFromCache(Boolean(result.fromCache));
-        setError(result.error || null);
+        setIsFallback(Boolean(result.isFallback || result.isRateLimited));
+        setFromCache(result.fromCache || false);
+        if (result.error) {
+          setError(result.error);
+        }
       } else {
         // If empty response, retain existing projects if present, otherwise fallback
         setProjects((prev) => (prev && prev.length > 0 ? prev : FALLBACK_PROJECTS));
@@ -43,16 +47,17 @@ export function useGitHubProjects() {
         setError(result.error || 'No portfolio repositories found.');
       }
     } catch (err) {
-      console.warn('[useGitHubProjects] Fetch error, preserving existing or fallback projects:', err);
       if (!isMountedRef.current) return;
-      setProjects((prev) => (prev && prev.length > 0 ? prev : FALLBACK_PROJECTS));
+      console.warn('[useGitHubProjects] Using fallback mock projects due to fetch error:', err);
+      setProjects(FALLBACK_PROJECTS);
       setIsFallback(true);
       setError(err?.message || 'Unable to sync with GitHub API.');
     } finally {
-      setTimeout(() => {
-        isFetchingRef.current = false;
+      // Gentle delay for smooth skeleton transition
+      timerRef.current = setTimeout(() => {
         if (isMountedRef.current) {
           setIsLoading(false);
+          inFlightRequestRef.current = false;
         }
       }, 300);
     }
@@ -65,9 +70,9 @@ export function useGitHubProjects() {
   useEffect(() => {
     isMountedRef.current = true;
     fetchProjects(false);
-
     return () => {
       isMountedRef.current = false;
+      if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, [fetchProjects]);
 

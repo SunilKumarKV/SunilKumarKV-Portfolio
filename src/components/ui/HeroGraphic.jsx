@@ -6,6 +6,8 @@ import NodeGlyph from './hero-graphic/NodeGlyph';
 export default function HeroGraphic() {
   const { theme } = useTheme();
   const graphicRef = useRef(null);
+  const rafIdRef = useRef(null);
+  const rectRef = useRef(null);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredNodeId, setHoveredNodeId] = useState(null);
@@ -17,44 +19,58 @@ export default function HeroGraphic() {
     setIsReducedMotion(mediaQuery.matches);
     const handleChange = (e) => setIsReducedMotion(e.matches);
     mediaQuery.addEventListener?.('change', handleChange);
-    return () => mediaQuery.removeEventListener?.('change', handleChange);
+    return () => {
+      mediaQuery.removeEventListener?.('change', handleChange);
+      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+    };
   }, []);
 
+  const handleMouseEnter = () => {
+    if (graphicRef.current) rectRef.current = graphicRef.current.getBoundingClientRect();
+    setIsHovered(true);
+  };
+
   const handleMouseMove = (e) => {
-    if (!graphicRef.current || isReducedMotion) return;
-    const rect = graphicRef.current.getBoundingClientRect();
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    setRotate({
-      x: -((e.clientY - rect.top - centerY) / centerY) * 5,
-      y: ((e.clientX - rect.left - centerX) / centerX) * 5,
+    if (!graphicRef.current || isReducedMotion || rafIdRef.current) return;
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+    rafIdRef.current = requestAnimationFrame(() => {
+      rafIdRef.current = null;
+      if (!graphicRef.current) return;
+      const rect = rectRef.current || graphicRef.current.getBoundingClientRect();
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      setRotate({
+        x: -((clientY - rect.top - centerY) / centerY) * 5,
+        y: ((clientX - rect.left - centerX) / centerX) * 5,
+      });
     });
+  };
+
+  const handleMouseLeave = () => {
+    if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+    rafIdRef.current = null;
+    rectRef.current = null;
+    setIsHovered(false);
+    setRotate({ x: 0, y: 0 });
+    setHoveredNodeId(null);
   };
 
   const activeNode = NODES.find((n) => n.id === (hoveredNodeId || selectedNodeId)) || NODES[0];
 
-  const getColors = () => {
-    if (theme === 'pure-black') {
-      return { core: '#FFFFFF', react: '#38BDF8', node: '#E2E8F0', n8n: '#38BDF8', sap: '#94A3B8', lines: 'rgba(255, 255, 255, 0.22)', textPrimary: '#FFFFFF', textMuted: '#CBD5E1' };
-    }
-    if (theme === 'cyberpunk') {
-      return { core: '#FF2A6D', react: '#05D9E8', node: '#9B5DE5', n8n: '#FF2A6D', sap: '#05D9E8', lines: 'rgba(255, 42, 109, 0.25)', textPrimary: '#FFFFFF', textMuted: '#CBD5E1' };
-    }
-    if (theme === 'light') {
-      return { core: '#2563EB', react: '#0284C7', node: '#059669', n8n: '#EA580C', sap: '#2563EB', lines: 'rgba(15, 23, 42, 0.15)', textPrimary: '#0F172A', textMuted: '#475569' };
-    }
-    return { core: '#6366F1', react: '#61DAFB', node: '#22C55E', n8n: '#F97316', sap: '#0284C7', lines: 'rgba(255, 255, 255, 0.15)', textPrimary: '#FFFFFF', textMuted: '#94A3B8' };
-  };
-
-  const colors = getColors();
+  const colors = {
+    'pure-black': { core: '#FFFFFF', react: '#38BDF8', node: '#E2E8F0', n8n: '#38BDF8', sap: '#94A3B8', lines: 'rgba(255, 255, 255, 0.22)', textPrimary: '#FFFFFF', textMuted: '#CBD5E1' },
+    cyberpunk: { core: '#FF2A6D', react: '#05D9E8', node: '#9B5DE5', n8n: '#FF2A6D', sap: '#05D9E8', lines: 'rgba(255, 42, 109, 0.25)', textPrimary: '#FFFFFF', textMuted: '#CBD5E1' },
+    light: { core: '#2563EB', react: '#0284C7', node: '#059669', n8n: '#EA580C', sap: '#2563EB', lines: 'rgba(15, 23, 42, 0.15)', textPrimary: '#0F172A', textMuted: '#475569' },
+  }[theme] || { core: '#6366F1', react: '#61DAFB', node: '#22C55E', n8n: '#F97316', sap: '#0284C7', lines: 'rgba(255, 255, 255, 0.15)', textPrimary: '#FFFFFF', textMuted: '#94A3B8' };
 
   return (
     <div 
       className="relative w-full max-w-lg mx-auto select-none perspective-[1000px]"
       ref={graphicRef}
       onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => { setIsHovered(false); setRotate({ x: 0, y: 0 }); setHoveredNodeId(null); }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <div
         style={{
