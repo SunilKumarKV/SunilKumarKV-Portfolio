@@ -45,7 +45,11 @@ export default function ContactSection() {
         <div className="lg:col-span-7 min-w-0 w-full">
           <GlassCard className="p-6 sm:p-8 space-y-6">
             {/* Segmented Dual-Intent Toggle */}
-            <div className="flex p-1.5 rounded-2xl bg-slate-950/70 border border-[var(--border-glass)] backdrop-blur-md">
+            <div 
+              role="group" 
+              aria-label="Inquiry type selector"
+              className="flex p-1.5 rounded-2xl bg-slate-950/70 border border-[var(--border-glass)] backdrop-blur-md"
+            >
               <button
                 type="button"
                 onClick={() => setIntent('hiring')}
