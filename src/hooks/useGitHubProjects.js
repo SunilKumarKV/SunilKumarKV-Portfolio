@@ -4,7 +4,7 @@ import { syncGitHubPortfolioRepos, FALLBACK_PROJECTS } from '../utils/githubSync
 /**
  * Custom React Hook: useGitHubProjects
  * Consumes the sync utility and handles loading states, cache indicators,
- * and rate-limit fallbacks.
+ * error state, and rate-limit fallbacks.
  */
 export function useGitHubProjects() {
   const [projects, setProjects] = useState([]);
@@ -17,13 +17,19 @@ export function useGitHubProjects() {
   const timerRef = useRef(null);
 
   const fetchProjects = useCallback(async (forceRefresh = false) => {
-    if (inFlightRequestRef.current) return;
-    inFlightRequestRef.current = true;
-    setIsLoading(true);
-    setError(null);
+    // Prevent overlapping concurrent requests
+    if (isFetchingRef.current) return;
+    isFetchingRef.current = true;
+
+    if (isMountedRef.current) {
+      setIsLoading(true);
+      setError(null);
+    }
 
     try {
       const result = await syncGitHubPortfolioRepos({ forceRefresh });
+      if (!isMountedRef.current) return;
+
       if (!isMountedRef.current) return;
 
       if (result.projects && result.projects.length > 0) {
@@ -34,19 +40,18 @@ export function useGitHubProjects() {
           setError(result.error);
         }
       } else {
-        setProjects(FALLBACK_PROJECTS);
+        // If empty response, retain existing projects if present, otherwise fallback
+        setProjects((prev) => (prev && prev.length > 0 ? prev : FALLBACK_PROJECTS));
         setIsFallback(true);
         setFromCache(false);
-        if (result.error) {
-          setError(result.error);
-        }
+        setError(result.error || 'No portfolio repositories found.');
       }
     } catch (err) {
       if (!isMountedRef.current) return;
       console.warn('[useGitHubProjects] Using fallback mock projects due to fetch error:', err);
       setProjects(FALLBACK_PROJECTS);
       setIsFallback(true);
-      setError(err.message || 'Unable to sync with GitHub API.');
+      setError(err?.message || 'Unable to sync with GitHub API.');
     } finally {
       // Gentle delay for smooth skeleton transition
       timerRef.current = setTimeout(() => {
@@ -57,6 +62,10 @@ export function useGitHubProjects() {
       }, 300);
     }
   }, []);
+
+  const refetch = useCallback(() => {
+    return fetchProjects(true);
+  }, [fetchProjects]);
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -73,7 +82,10 @@ export function useGitHubProjects() {
     isFallback,
     fromCache,
     error,
-    refetch: () => fetchProjects(true),
+    refetch,
+    // Aliases for safety / backward compatibility
+    loading: isLoading,
+    refreshProjects: refetch,
   };
 }
 
