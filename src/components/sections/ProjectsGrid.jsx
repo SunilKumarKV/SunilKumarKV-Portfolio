@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useGitHubProjects } from '../../hooks/useGitHubProjects';
 import { portfolioData } from '../../data/portfolioData';
-import { RotateCw, CheckCircle2, Sparkles, FolderGit2 } from 'lucide-react';
+import { RotateCw, CheckCircle2, Sparkles, FolderGit2, AlertCircle } from 'lucide-react';
 import BentoProjectCard from './projects/BentoProjectCard';
 import ProjectSkeleton from './projects/ProjectSkeleton';
 import ProjectFilterTabs from './projects/ProjectFilterTabs';
@@ -21,7 +21,7 @@ function matchesCategory(project, tabId) {
 }
 
 export default function ProjectsGrid() {
-  const { projects, loading, isFallback, refreshProjects } = useGitHubProjects();
+  const { projects, isLoading, isFallback, fromCache, error, refetch } = useGitHubProjects();
   const [activeTab, setActiveTab] = useState('all');
 
   const featuredProducts = portfolioData.featuredProducts || [];
@@ -77,17 +77,29 @@ export default function ProjectsGrid() {
   const syncAction = (
     <div className="flex items-center gap-2.5">
       <button
-        onClick={refreshProjects}
-        disabled={loading}
-        className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] ios-glass hover:bg-white/10 border border-[var(--border-glass)] transition-all active:scale-95 disabled:opacity-50"
-        title="Refresh GitHub repositories cache"
+        onClick={refetch}
+        disabled={isLoading}
+        className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] ios-glass hover:bg-white/10 border border-[var(--border-glass)] transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+        title={isLoading ? 'Synchronizing with GitHub API...' : 'Refresh GitHub repositories cache'}
+        aria-label="Synchronize GitHub repositories"
       >
-        <RotateCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-electric-blue' : ''}`} />
-        <span>Sync</span>
+        <RotateCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-electric-blue' : ''}`} />
+        <span>{isLoading ? 'Syncing...' : 'Sync'}</span>
       </button>
-      <div className="hidden sm:flex items-center gap-1.5 text-[11px] font-mono text-[var(--text-secondary)]">
-        <CheckCircle2 className="w-3.5 h-3.5 text-emerald flex-shrink-0" />
-        <span>{isFallback ? 'Cached' : 'Live API'}</span>
+
+      <div
+        className="hidden sm:flex items-center gap-1.5 text-[11px] font-mono text-[var(--text-secondary)]"
+        title={error || (fromCache ? 'Data loaded from 1-hour localStorage cache' : isFallback ? 'Curated fallback projects' : 'Live data from GitHub API')}
+      >
+        {isLoading ? (
+          <><RotateCw className="w-3.5 h-3.5 text-electric-blue animate-spin flex-shrink-0" /><span className="text-electric-blue">Syncing...</span></>
+        ) : error || isFallback ? (
+          <><AlertCircle className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" /><span className="text-amber-400">{isFallback ? 'Fallback Mode' : 'Sync Issue'}</span></>
+        ) : fromCache ? (
+          <><CheckCircle2 className="w-3.5 h-3.5 text-emerald flex-shrink-0" /><span>Cached</span></>
+        ) : (
+          <><CheckCircle2 className="w-3.5 h-3.5 text-emerald flex-shrink-0" /><span>Live API</span></>
+        )}
       </div>
     </div>
   );
@@ -151,7 +163,7 @@ export default function ProjectsGrid() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
-          {loading ? (
+          {isLoading && allSecondary.length === 0 ? (
             <>
               <ProjectSkeleton />
               <ProjectSkeleton />
