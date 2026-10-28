@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { syncGitHubPortfolioRepos, FALLBACK_PROJECTS } from '../utils/githubSync';
 
 /**
@@ -12,8 +12,11 @@ export function useGitHubProjects() {
   const [isFallback, setIsFallback] = useState(false);
   const [fromCache, setFromCache] = useState(false);
   const [error, setError] = useState(null);
+  const inFlightRequestRef = useRef(false);
 
   const fetchProjects = useCallback(async (forceRefresh = false) => {
+    if (inFlightRequestRef.current) return;
+    inFlightRequestRef.current = true;
     setIsLoading(true);
     setError(null);
 
@@ -44,6 +47,7 @@ export function useGitHubProjects() {
       // Gentle delay for smooth skeleton transition
       setTimeout(() => {
         setIsLoading(false);
+        inFlightRequestRef.current = false;
       }, 300);
     }
   }, []);
