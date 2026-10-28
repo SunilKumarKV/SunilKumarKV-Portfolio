@@ -4,7 +4,7 @@ import { syncGitHubPortfolioRepos, FALLBACK_PROJECTS } from '../utils/githubSync
 /**
  * Custom React Hook: useGitHubProjects
  * Consumes the sync utility and handles loading states, cache indicators,
- * and rate-limit fallbacks.
+ * error state, and rate-limit fallbacks.
  */
 export function useGitHubProjects() {
   const [projects, setProjects] = useState([]);
@@ -12,48 +12,63 @@ export function useGitHubProjects() {
   const [isFallback, setIsFallback] = useState(false);
   const [fromCache, setFromCache] = useState(false);
   const [error, setError] = useState(null);
-  const inFlightRequestRef = useRef(false);
+  const isFetchingRef = useRef(false);
+  const isMountedRef = useRef(true);
 
   const fetchProjects = useCallback(async (forceRefresh = false) => {
-    if (inFlightRequestRef.current) return;
-    inFlightRequestRef.current = true;
-    setIsLoading(true);
-    setError(null);
+    // Prevent overlapping concurrent requests
+    if (isFetchingRef.current) return;
+    isFetchingRef.current = true;
+
+    if (isMountedRef.current) {
+      setIsLoading(true);
+      setError(null);
+    }
 
     try {
       const result = await syncGitHubPortfolioRepos({ forceRefresh });
 
+      if (!isMountedRef.current) return;
+
       if (result.projects && result.projects.length > 0) {
         setProjects(result.projects);
-        setIsFallback(result.isRateLimited || false);
-        setFromCache(result.fromCache || false);
-        if (result.error) {
-          setError(result.error);
-        }
+        setIsFallback(Boolean(result.isRateLimited || result.isFallback));
+        setFromCache(Boolean(result.fromCache));
+        setError(result.error || null);
       } else {
-        setProjects(FALLBACK_PROJECTS);
+        // If empty response, retain existing projects if present, otherwise fallback
+        setProjects((prev) => (prev && prev.length > 0 ? prev : FALLBACK_PROJECTS));
         setIsFallback(true);
         setFromCache(false);
-        if (result.error) {
-          setError(result.error);
-        }
+        setError(result.error || 'No portfolio repositories found.');
       }
     } catch (err) {
-      console.warn('[useGitHubProjects] Using fallback mock projects due to fetch error:', err);
-      setProjects(FALLBACK_PROJECTS);
+      console.warn('[useGitHubProjects] Fetch error, preserving existing or fallback projects:', err);
+      if (!isMountedRef.current) return;
+      setProjects((prev) => (prev && prev.length > 0 ? prev : FALLBACK_PROJECTS));
       setIsFallback(true);
-      setError(err.message || 'Unable to sync with GitHub API.');
+      setError(err?.message || 'Unable to sync with GitHub API.');
     } finally {
-      // Gentle delay for smooth skeleton transition
       setTimeout(() => {
-        setIsLoading(false);
-        inFlightRequestRef.current = false;
+        isFetchingRef.current = false;
+        if (isMountedRef.current) {
+          setIsLoading(false);
+        }
       }, 300);
     }
   }, []);
 
+  const refetch = useCallback(() => {
+    return fetchProjects(true);
+  }, [fetchProjects]);
+
   useEffect(() => {
+    isMountedRef.current = true;
     fetchProjects(false);
+
+    return () => {
+      isMountedRef.current = false;
+    };
   }, [fetchProjects]);
 
   return {
@@ -62,7 +77,10 @@ export function useGitHubProjects() {
     isFallback,
     fromCache,
     error,
-    refetch: () => fetchProjects(true),
+    refetch,
+    // Aliases for safety / backward compatibility
+    loading: isLoading,
+    refreshProjects: refetch,
   };
 }
 
