@@ -24,6 +24,11 @@ export default function ProjectsGrid() {
   const { projects, isLoading, isFallback, fromCache, error, refetch } = useGitHubProjects();
   const [activeTab, setActiveTab] = useState('all');
 
+  const handleRefresh = () => {
+    if (isLoading) return;
+    refetch();
+  };
+
   const featuredProducts = portfolioData.featuredProducts || [];
 
   // Pinned Tier 1 Flagships: ChessPlay and AttendanceTracker
@@ -77,7 +82,7 @@ export default function ProjectsGrid() {
   const syncAction = (
     <div className="flex items-center gap-2.5">
       <button
-        onClick={refetch}
+        onClick={handleRefresh}
         disabled={isLoading}
         className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] ios-glass hover:bg-white/10 border border-[var(--border-glass)] transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
         title={isLoading ? 'Synchronizing with GitHub API...' : 'Refresh GitHub repositories cache'}
@@ -127,9 +132,16 @@ export default function ProjectsGrid() {
           onTabChange={setActiveTab}
           counts={counts}
         />
-        <span className="text-xs font-mono text-[var(--text-secondary)] hidden sm:inline-block">
-          Showing {filteredPrimary.length + filteredSecondary.length} of {counts.all} Projects
-        </span>
+        <div className="flex items-center gap-3">
+          {error && (
+            <span className="text-[11px] font-mono text-amber-500 hidden md:inline-block">
+              Sync issue: showing {isFallback ? 'fallback' : 'cached'} data
+            </span>
+          )}
+          <span className="text-xs font-mono text-[var(--text-secondary)] hidden sm:inline-block">
+            Showing {filteredPrimary.length + filteredSecondary.length} of {counts.all} Projects
+          </span>
+        </div>
       </div>
 
       {/* Tier 1: Primary Flagships Grid (ChessPlay & AttendanceTracker - 2-Col on Desktop) */}

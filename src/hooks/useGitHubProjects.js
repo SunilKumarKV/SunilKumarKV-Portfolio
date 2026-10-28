@@ -12,7 +12,6 @@ export function useGitHubProjects() {
   const [isFallback, setIsFallback] = useState(false);
   const [fromCache, setFromCache] = useState(false);
   const [error, setError] = useState(null);
-
   const isFetchingRef = useRef(false);
   const isMountedRef = useRef(true);
 
@@ -50,10 +49,12 @@ export function useGitHubProjects() {
       setIsFallback(true);
       setError(err?.message || 'Unable to sync with GitHub API.');
     } finally {
-      isFetchingRef.current = false;
-      if (isMountedRef.current) {
-        setIsLoading(false);
-      }
+      setTimeout(() => {
+        isFetchingRef.current = false;
+        if (isMountedRef.current) {
+          setIsLoading(false);
+        }
+      }, 300);
     }
   }, []);
 
