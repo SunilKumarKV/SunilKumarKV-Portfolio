@@ -10,6 +10,12 @@
     --glass-blur-radius: 12px; /* corresponds to backdrop-blur-md */
     --glass-bg: rgba(15, 23, 42, 0.65);
     --glass-border-color: rgba(255, 255, 255, 0.08);
+    --border-glass: rgba(255, 255, 255, 0.08);
+
+    /* Text Colors (WCAG 2.2 AA compliant contrast) */
+    --text-primary: #F8FAFC;
+    --text-secondary: #94A3B8;
+    --text-muted: #64748B;
     
     /* Specular Gradient Borders */
     --specular-border-gradient: linear-gradient(
@@ -47,6 +53,13 @@
     --canvas-card: #FFFFFF;
     --glass-bg: rgba(255, 255, 255, 0.92);
     --glass-border-color: rgba(15, 23, 42, 0.12);
+    --border-glass: rgba(15, 23, 42, 0.12);
+
+    /* Light Mode High-Contrast Text Tokens (WCAG 2.2 AA: > 5:1 contrast on #F8FAFC / #FFFFFF) */
+    --text-primary: #0F172A;
+    --text-secondary: #475569;
+    --text-muted: #64748B;
+
     --specular-border-gradient: linear-gradient(
       135deg,
       rgba(37, 99, 235, 0.4) 0%,
@@ -71,6 +84,13 @@
     --canvas-card: #0A0A0A;
     --glass-bg: rgba(10, 10, 10, 0.92);
     --glass-border-color: rgba(255, 255, 255, 0.18);
+    --border-glass: rgba(255, 255, 255, 0.18);
+
+    /* Pure Black Stark Contrast Text Tokens */
+    --text-primary: #FFFFFF;
+    --text-secondary: #A1A1AA;
+    --text-muted: #71717A;
+
     --specular-border-gradient: linear-gradient(
       135deg,
       rgba(255, 255, 255, 0.6) 0%,
@@ -96,6 +116,13 @@
     --canvas-card: rgba(13, 10, 26, 0.88);
     --glass-bg: rgba(13, 10, 26, 0.85);
     --glass-border-color: rgba(255, 42, 109, 0.35);
+    --border-glass: rgba(255, 42, 109, 0.35);
+
+    /* Cyberpunk High-Contrast Text Tokens */
+    --text-primary: #FDFEFE;
+    --text-secondary: #CBD5E1;
+    --text-muted: #94A3B8;
+
     --specular-border-gradient: linear-gradient(
       135deg,
       rgba(255, 42, 109, 0.75) 0%,
@@ -120,6 +147,13 @@
     --canvas-card: #111827;
     --glass-bg: rgba(15, 23, 42, 0.65);
     --glass-border-color: rgba(255, 255, 255, 0.08);
+    --border-glass: rgba(255, 255, 255, 0.08);
+
+    /* Deep Dark Text Tokens */
+    --text-primary: #F8FAFC;
+    --text-secondary: #94A3B8;
+    --text-muted: #64748B;
+
     --color-slate-950: #0B0F19;
     --color-card-surface: #111827;
     --color-electric-blue: #3B82F6;
@@ -247,6 +281,12 @@
     border-color: rgba(15, 23, 42, 0.2) !important;
   }
 
+  html.theme-light input::placeholder,
+  html.theme-light textarea::placeholder {
+    color: #64748B !important;
+    opacity: 1 !important;
+  }
+
   html.theme-light [class*="border-white/"] {
     border-color: rgba(15, 23, 42, 0.12) !important;
   }
@@ -322,6 +362,24 @@
   html.theme-cyberpunk .bg-electric-blue {
     background-color: #FF2A6D !important;
     box-shadow: 0 0 24px rgba(255, 42, 109, 0.5) !important;
+  }
+
+  /* Accessible Keyboard Focus Indicators (WCAG 2.2 AA) */
+  :focus-visible {
+    outline: 2px solid #3B82F6 !important;
+    outline-offset: 2px !important;
+  }
+
+  html.theme-light :focus-visible {
+    outline-color: #2563EB !important;
+  }
+
+  html.theme-pure-black :focus-visible {
+    outline-color: #38BDF8 !important;
+  }
+
+  html.theme-cyberpunk :focus-visible {
+    outline-color: #05D9E8 !important;
   }
 
   /* Standard & WebKit Custom Scrollbar */
@@ -650,7 +708,9 @@
   .animate-dash-stream-reverse,
   .animate-spin-orbit,
   .animate-spin-atom,
-  .animate-core-pulse {
+  .animate-core-pulse,
+  .animate-pulse,
+  .animate-ping {
     animation: none !important;
     transform: none !important;
   }

@@ -107,7 +107,25 @@ export default function HeroGraphic() {
               const isH = hoveredNodeId === node.id || selectedNodeId === node.id;
               const nCol = node.id === 'react-ui' ? colors.react : node.id === 'node-api' ? colors.node : node.id === 'n8n-webhooks' ? colors.n8n : colors.sap;
               return (
-                <g key={node.id} transform={`translate(${node.coords.x}, ${node.coords.y})`} className="cursor-pointer" onMouseEnter={() => { setHoveredNodeId(node.id); setSelectedNodeId(node.id); }} onMouseLeave={() => setHoveredNodeId(null)} onClick={() => setSelectedNodeId(node.id)}>
+                <g 
+                  key={node.id} 
+                  transform={`translate(${node.coords.x}, ${node.coords.y})`} 
+                  className="cursor-pointer focus:outline-none" 
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`${node.name} architecture node: ${node.role}`}
+                  onMouseEnter={() => { setHoveredNodeId(node.id); setSelectedNodeId(node.id); }} 
+                  onMouseLeave={() => setHoveredNodeId(null)} 
+                  onFocus={() => { setHoveredNodeId(node.id); setSelectedNodeId(node.id); }}
+                  onBlur={() => setHoveredNodeId(null)}
+                  onClick={() => setSelectedNodeId(node.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setSelectedNodeId(node.id);
+                    }
+                  }}
+                >
                   <circle r={isH ? 36 : 28} fill={nCol} opacity={isH ? 0.28 : 0.14} className="transition-all duration-300" />
                   <circle r="24" fill={theme === 'light' ? '#FFFFFF' : theme === 'pure-black' ? '#0A0A0A' : '#111827'} stroke={isH ? nCol : colors.lines} strokeWidth={isH ? '2.5' : '1.5'} filter="url(#packetGlowFilter)" />
                   <NodeGlyph nodeId={node.id} color={nCol} />
@@ -117,7 +135,24 @@ export default function HeroGraphic() {
               );
             })}
 
-            <g transform="translate(270, 210)" className="cursor-pointer" onMouseEnter={() => { setHoveredNodeId('core'); setSelectedNodeId('core'); }} onMouseLeave={() => setHoveredNodeId(null)} onClick={() => setSelectedNodeId('core')}>
+            <g 
+              transform="translate(270, 210)" 
+              className="cursor-pointer focus:outline-none" 
+              tabIndex={0}
+              role="button"
+              aria-label="Full-Stack Core: Systems & Automation architecture center"
+              onMouseEnter={() => { setHoveredNodeId('core'); setSelectedNodeId('core'); }} 
+              onMouseLeave={() => setHoveredNodeId(null)} 
+              onFocus={() => { setHoveredNodeId('core'); setSelectedNodeId('core'); }}
+              onBlur={() => setHoveredNodeId(null)}
+              onClick={() => setSelectedNodeId('core')}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setSelectedNodeId('core');
+                }
+              }}
+            >
               <circle r="52" fill={colors.core} opacity="0.18" className={!isReducedMotion ? 'animate-core-pulse' : ''} />
               <g className={!isReducedMotion ? 'animate-spin-atom' : ''} style={{ transformOrigin: '0 0' }}>
                 <ellipse rx="42" ry="17" fill="none" stroke={colors.react} strokeWidth="1.6" strokeDasharray="4 4" opacity="0.85" />

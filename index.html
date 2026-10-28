@@ -44,6 +44,32 @@
       href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Share+Tech+Mono&family=VT323&display=swap"
       rel="stylesheet"
     />
+    <!-- Theme Initialization Script (Prevents flash of default theme on reload) -->
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('sunilcraft_theme');
+          var root = document.documentElement;
+          if (saved === 'light') {
+            root.classList.add('theme-light');
+            root.setAttribute('data-theme', 'light');
+            root.style.colorScheme = 'light';
+          } else if (saved === 'pure-black') {
+            root.classList.add('dark', 'theme-pure-black');
+            root.setAttribute('data-theme', 'pure-black');
+            root.style.colorScheme = 'dark';
+          } else if (saved === 'cyberpunk') {
+            root.classList.add('dark', 'theme-cyberpunk');
+            root.setAttribute('data-theme', 'cyberpunk');
+            root.style.colorScheme = 'dark';
+          } else {
+            root.classList.add('dark', 'theme-dark');
+            root.setAttribute('data-theme', 'dark');
+            root.style.colorScheme = 'dark';
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body class="selection:bg-electric-blue/30 selection:text-white antialiased">
     <div id="root"></div>
