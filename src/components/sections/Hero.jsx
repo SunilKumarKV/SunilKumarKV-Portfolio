@@ -48,17 +48,20 @@ export default function Hero() {
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald" />
             </span>
             <Sparkles className="w-3.5 h-3.5 text-electric-blue flex-shrink-0" />
-            <span className="tracking-wide truncate">
+            <span className="tracking-wide hidden sm:inline truncate">
               Available for Full-Stack Roles & Select Product Contracts
+            </span>
+            <span className="tracking-wide sm:hidden inline truncate">
+              Available for Full-Stack Roles & Contracts
             </span>
           </div>
 
           {/* Headline: Full-Stack Developer | React Specialist with Gradient Accent */}
           <div className="space-y-2">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[var(--text-primary)] leading-[1.12] break-words">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[var(--text-primary)] leading-[1.15] break-words">
               Full-Stack Developer{' '}
-              <span className="text-[var(--text-secondary)] font-light">|</span>{' '}
-              <span className="text-[var(--text-primary)]">React Specialist</span>
+              <span className="hidden sm:inline text-[var(--text-secondary)] font-light">|</span>{' '}
+              <span className="block sm:inline text-[var(--text-primary)]">React Specialist</span>
               <span className={`block mt-3 text-2xl sm:text-3xl lg:text-4xl font-extrabold text-transparent bg-clip-text ${
                 theme === 'cyberpunk'
                   ? 'bg-gradient-to-r from-[#FF2A6D] via-[#05D9E8] to-[#9B5DE5]'
@@ -97,11 +100,11 @@ export default function Hero() {
           </div>
 
           {/* CTAs */}
-          <div className="flex flex-wrap items-center gap-3.5 pt-2">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
             <a 
               href="#projects"
               onClick={(e) => handleSmoothScroll(e, 'projects')}
-              className="px-6 py-3 rounded-xl text-sm font-semibold text-white bg-electric-blue hover:bg-blue-500 shadow-[0_0_24px_rgba(59,130,246,0.5)] hover:shadow-[0_0_32px_rgba(59,130,246,0.7)] transition-all duration-200 active:scale-95 flex items-center gap-2 group"
+              className="px-6 py-3 rounded-xl text-sm font-semibold text-white bg-electric-blue hover:bg-blue-500 shadow-[0_0_24px_rgba(59,130,246,0.5)] hover:shadow-[0_0_32px_rgba(59,130,246,0.7)] transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 group"
             >
               <FolderGit2 className="w-4 h-4 flex-shrink-0" />
               <span>Explore Featured Projects</span>
@@ -111,7 +114,7 @@ export default function Hero() {
             <a 
               href="#contact"
               onClick={(e) => handleSmoothScroll(e, 'contact')}
-              className="px-5 py-3 rounded-xl text-sm font-medium text-[var(--text-primary)] ios-glass hover:bg-white/10 border border-[var(--border-glass)] hover:border-white/30 backdrop-blur-md transition-all duration-200 active:scale-95 flex items-center gap-2"
+              className="px-5 py-3 rounded-xl text-sm font-medium text-[var(--text-primary)] ios-glass hover:bg-white/10 border border-[var(--border-glass)] hover:border-white/30 backdrop-blur-md transition-all duration-200 active:scale-95 flex items-center justify-center gap-2"
               title="Let's Connect (sunilkumarkv9535@gmail.com)"
             >
               <Mail className="w-4 h-4 text-electric-blue flex-shrink-0" />

@@ -13,7 +13,7 @@ export default function MobileDrawer({
   onNavigate,
 }) {
   return (
-    <div className="md:hidden px-4 pt-3 pb-6 ios-glass bg-slate-900/95 border-b border-[var(--border-glass)] space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
+    <div className="lg:hidden px-4 pt-3 pb-6 ios-glass bg-slate-900/95 border-b border-[var(--border-glass)] space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
       <nav className="flex flex-col space-y-1">
         {navLinks.map((link) => {
           const isActive = 

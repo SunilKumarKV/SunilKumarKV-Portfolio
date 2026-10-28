@@ -16,7 +16,7 @@ export default function ExperienceCard({ job }) {
   return (
     <div className="relative group">
       {/* Timeline Glowing Node */}
-      <div className="absolute -left-[31px] sm:-left-[39px] top-6 w-5 h-5 rounded-full bg-slate-950 border-2 border-electric-blue flex items-center justify-center shadow-[0_0_12px_rgba(59,130,246,0.6)]">
+      <div className="absolute -left-[34px] sm:-left-[42px] top-6 w-5 h-5 rounded-full bg-slate-950 border-2 border-electric-blue flex items-center justify-center shadow-[0_0_12px_rgba(59,130,246,0.6)]">
         <span className="w-1.5 h-1.5 rounded-full bg-emerald animate-ping" />
       </div>
 

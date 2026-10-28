@@ -22,7 +22,7 @@ export default function ExperienceSection() {
   return (
     <section 
       id="experience" 
-      className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24 scroll-mt-20 relative z-10 space-y-10"
+      className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24 scroll-mt-20 relative z-10 space-y-10"
     >
       {/* Standard Section Heading */}
       <SectionHeading
@@ -34,12 +34,14 @@ export default function ExperienceSection() {
       />
 
       {/* Constrained Left-Rail Timeline Container */}
-      <div className="relative pl-6 sm:pl-8 border-l border-slate-200/70 dark:border-slate-800/70 space-y-12 ml-2 sm:ml-4">
-        {professionalExperience.map((job) => (
-          <div key={job.id} className="min-w-0 w-full">
-            <ExperienceCard job={job} />
-          </div>
-        ))}
+      <div className="max-w-4xl mx-auto">
+        <div className="relative pl-6 sm:pl-8 border-l border-slate-200/70 dark:border-slate-800/70 space-y-12 ml-2 sm:ml-4">
+          {professionalExperience.map((job) => (
+            <div key={job.id} className="min-w-0 w-full">
+              <ExperienceCard job={job} />
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

@@ -102,7 +102,7 @@ export default function Navbar() {
         </a>
 
         {/* Center: Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center space-x-1 lg:space-x-2 px-3 py-1.5 rounded-full ios-glass-card shadow-inner">
+        <nav className="hidden lg:flex items-center space-x-1 lg:space-x-2 px-3 py-1.5 rounded-full ios-glass-card shadow-inner">
           {navLinks.map((link) => {
             const isActive = activeSection === link.href.substring(1) || (link.href === '#work' && activeSection === 'projects');
             return (
@@ -126,14 +126,16 @@ export default function Navbar() {
         </nav>
 
         {/* Right Side: Theme Switcher, Font Switcher, Resume & Hire Me */}
-        <div className="hidden sm:flex items-center space-x-2.5">
+        <div className="hidden sm:flex items-center space-x-2 sm:space-x-2.5">
           <ThemeSwitcher />
-          <FontSwitcher />
+          <div className="hidden md:block">
+            <FontSwitcher />
+          </div>
 
           <a
             href="/resume.pdf"
             download="Sunil_Kumar_KV_Resume.pdf"
-            className="group relative inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-medium text-[var(--text-primary)] ios-glass hover:bg-white/10 border border-[var(--border-glass)] shadow-sm transition-all duration-200 active:scale-95"
+            className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-medium text-[var(--text-primary)] ios-glass hover:bg-white/10 border border-[var(--border-glass)] shadow-sm transition-all duration-200 active:scale-95"
             aria-label="Download Resume"
           >
             <Download className="w-3.5 h-3.5 text-slate-300 group-hover:text-electric-blue group-hover:-translate-y-0.5 transition-transform duration-200" />
@@ -143,7 +145,7 @@ export default function Navbar() {
           <a
             href="#contact"
             onClick={(e) => handleSmoothScroll(e, '#contact')}
-            className="relative inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-electric-blue hover:bg-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.45)] hover:shadow-[0_0_28px_rgba(59,130,246,0.7)] transition-all duration-200 active:scale-95 overflow-hidden"
+            className="relative inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-semibold text-white bg-electric-blue hover:bg-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.45)] hover:shadow-[0_0_28px_rgba(59,130,246,0.7)] transition-all duration-200 active:scale-95 overflow-hidden"
           >
             <Sparkles className="w-3.5 h-3.5 text-white animate-pulse" />
             <span>Hire Me</span>
@@ -151,7 +153,7 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Menu Toggle Button */}
-        <div className="flex md:hidden items-center space-x-2">
+        <div className="flex lg:hidden items-center space-x-2">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="p-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 border border-[var(--border-glass)] focus:outline-none"
