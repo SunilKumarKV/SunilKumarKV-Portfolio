@@ -3,6 +3,8 @@ import { ExternalLink, Github, Star, GitFork, Sparkles, Layers } from 'lucide-re
 
 export default function BentoProjectCard({ project, isFeatured = false, className = '' }) {
   const cardRef = useRef(null);
+  const rafIdRef = useRef(null);
+  const rectRef = useRef(null);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
@@ -14,19 +16,48 @@ export default function BentoProjectCard({ project, isFeatured = false, classNam
     setIsReducedMotion(mediaQuery.matches);
     const handleChange = (e) => setIsReducedMotion(e.matches);
     mediaQuery.addEventListener?.('change', handleChange);
-    return () => mediaQuery.removeEventListener?.('change', handleChange);
+    return () => {
+      mediaQuery.removeEventListener?.('change', handleChange);
+      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+    };
   }, []);
+
+  const handleMouseEnter = () => {
+    if (cardRef.current) {
+      rectRef.current = cardRef.current.getBoundingClientRect();
+    }
+    setIsHovered(true);
+  };
 
   const handleMouseMove = (e) => {
     if (!cardRef.current || isReducedMotion) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    setRotate({
-      x: -((e.clientY - rect.top - centerY) / centerY) * 6,
-      y: ((e.clientX - rect.left - centerX) / centerX) * 6,
+    if (rafIdRef.current) return;
+
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+
+    rafIdRef.current = requestAnimationFrame(() => {
+      rafIdRef.current = null;
+      if (!cardRef.current) return;
+      const rect = rectRef.current || cardRef.current.getBoundingClientRect();
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      setRotate({
+        x: -((clientY - rect.top - centerY) / centerY) * 6,
+        y: ((clientX - rect.left - centerX) / centerX) * 6,
+      });
+      setMousePos({ x: clientX - rect.left, y: clientY - rect.top });
     });
-    setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  };
+
+  const handleMouseLeave = () => {
+    if (rafIdRef.current) {
+      cancelAnimationFrame(rafIdRef.current);
+      rafIdRef.current = null;
+    }
+    rectRef.current = null;
+    setIsHovered(false);
+    setRotate({ x: 0, y: 0 });
   };
 
   const githubUrl = project.githubUrl || project.github;
@@ -38,8 +69,8 @@ export default function BentoProjectCard({ project, isFeatured = false, classNam
     <div
       ref={cardRef}
       onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => { setIsHovered(false); setRotate({ x: 0, y: 0 }); }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       style={{
         transform: !isReducedMotion && isHovered 
           ? `perspective(1000px) rotateX(${rotate.x.toFixed(2)}deg) rotateY(${rotate.y.toFixed(2)}deg) scale3d(1.015, 1.015, 1.015)`
@@ -61,10 +92,14 @@ export default function BentoProjectCard({ project, isFeatured = false, classNam
       <div className="relative z-10 space-y-4">
         {/* 16:9 Preview */}
         <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-slate-950/80 border border-[var(--border-glass)]">
-          {!imgError ? (
+          {project.thumbnail && !imgError ? (
             <img
               src={project.thumbnail}
               alt={project.title}
+              loading="lazy"
+              decoding="async"
+              width={600}
+              height={338}
               onError={() => setImgError(true)}
               className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
             />

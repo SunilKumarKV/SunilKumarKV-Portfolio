@@ -13,6 +13,8 @@ export function useGitHubProjects() {
   const [fromCache, setFromCache] = useState(false);
   const [error, setError] = useState(null);
   const inFlightRequestRef = useRef(false);
+  const isMountedRef = useRef(true);
+  const timerRef = useRef(null);
 
   const fetchProjects = useCallback(async (forceRefresh = false) => {
     if (inFlightRequestRef.current) return;
@@ -22,10 +24,11 @@ export function useGitHubProjects() {
 
     try {
       const result = await syncGitHubPortfolioRepos({ forceRefresh });
+      if (!isMountedRef.current) return;
 
       if (result.projects && result.projects.length > 0) {
         setProjects(result.projects);
-        setIsFallback(result.isRateLimited || false);
+        setIsFallback(Boolean(result.isFallback || result.isRateLimited));
         setFromCache(result.fromCache || false);
         if (result.error) {
           setError(result.error);
@@ -39,21 +42,29 @@ export function useGitHubProjects() {
         }
       }
     } catch (err) {
+      if (!isMountedRef.current) return;
       console.warn('[useGitHubProjects] Using fallback mock projects due to fetch error:', err);
       setProjects(FALLBACK_PROJECTS);
       setIsFallback(true);
       setError(err.message || 'Unable to sync with GitHub API.');
     } finally {
       // Gentle delay for smooth skeleton transition
-      setTimeout(() => {
-        setIsLoading(false);
-        inFlightRequestRef.current = false;
+      timerRef.current = setTimeout(() => {
+        if (isMountedRef.current) {
+          setIsLoading(false);
+          inFlightRequestRef.current = false;
+        }
       }, 300);
     }
   }, []);
 
   useEffect(() => {
+    isMountedRef.current = true;
     fetchProjects(false);
+    return () => {
+      isMountedRef.current = false;
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
   }, [fetchProjects]);
 
   return {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import TechMarquee from './TechMarquee';
 import { useGitHubProjects } from '../../hooks/useGitHubProjects';
 import { SKILL_CATEGORIES } from './skills/skillsData';
@@ -10,7 +10,7 @@ import { Sparkles } from 'lucide-react';
 export default function AnimatedSkills() {
   const { projects } = useGitHubProjects();
 
-  const getProjectsUsingSkill = (skill) => {
+  const getProjectsUsingSkill = useCallback((skill) => {
     if (!projects || !Array.isArray(projects) || projects.length === 0) return [];
     
     // Safely extract name and aliases whether skill is a string or an object
@@ -27,7 +27,7 @@ export default function AnimatedSkills() {
         return searchTerms.some((term) => techLower.includes(term) || term.includes(techLower));
       })
     );
-  };
+  }, [projects]);
 
   const categories = Array.isArray(SKILL_CATEGORIES) ? SKILL_CATEGORIES : [];
 
