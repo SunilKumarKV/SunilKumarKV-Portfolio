@@ -24,7 +24,7 @@ export default function EducationSection() {
   return (
     <section 
       id="education" 
-      className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24 scroll-mt-20 relative z-10 space-y-10"
+      className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24 scroll-mt-20 relative z-10 space-y-10"
     >
       {/* Standard Section Heading */}
       <SectionHeading
@@ -35,44 +35,46 @@ export default function EducationSection() {
         action={activeStudentBadge}
       />
 
-      {/* Balanced 2-Column Degree Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-        {education.map((edu) => (
-          <div key={edu.id} className="min-w-0 w-full flex">
-            <DegreeCard edu={edu} />
-          </div>
-        ))}
-      </div>
-
-      {/* Verified Engineering Bootcamps Container */}
-      <GlassCard className="p-7 sm:p-8 space-y-6">
-        <div className="flex items-center justify-between pb-4 border-b border-slate-200/70 dark:border-slate-800/70">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-emerald/15 border border-emerald/30 flex items-center justify-center">
-              <BadgeCheck className="w-4 h-4 text-emerald" />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-[var(--text-primary)]">
-                Verified Engineering Bootcamps
-              </h3>
-              <p className="text-xs text-[var(--text-secondary)]">
-                Targeted full-stack web and language deep dives
-              </p>
-            </div>
-          </div>
-          <span className="text-xs font-mono text-[var(--text-secondary)] hidden sm:inline-block">
-            Udemy Verified
-          </span>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {certifications.map((cert) => (
-            <div key={cert.id} className="min-w-0 w-full flex">
-              <CertCard cert={cert} />
+      <div className="max-w-5xl mx-auto space-y-10">
+        {/* Balanced 2-Column Degree Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+          {education.map((edu) => (
+            <div key={edu.id} className="min-w-0 w-full flex">
+              <DegreeCard edu={edu} />
             </div>
           ))}
         </div>
-      </GlassCard>
+
+        {/* Verified Engineering Bootcamps Container */}
+        <GlassCard className="p-7 sm:p-8 space-y-6">
+          <div className="flex items-center justify-between pb-4 border-b border-slate-200/70 dark:border-slate-800/70">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-emerald/15 border border-emerald/30 flex items-center justify-center">
+                <BadgeCheck className="w-4 h-4 text-emerald" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-[var(--text-primary)]">
+                  Verified Engineering Bootcamps
+                </h3>
+                <p className="text-xs text-[var(--text-secondary)]">
+                  Targeted full-stack web and language deep dives
+                </p>
+              </div>
+            </div>
+            <span className="text-xs font-mono text-[var(--text-secondary)] hidden sm:inline-block">
+              Udemy Verified
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {certifications.map((cert) => (
+              <div key={cert.id} className="min-w-0 w-full flex">
+                <CertCard cert={cert} />
+              </div>
+            ))}
+          </div>
+        </GlassCard>
+      </div>
     </section>
   );
 }

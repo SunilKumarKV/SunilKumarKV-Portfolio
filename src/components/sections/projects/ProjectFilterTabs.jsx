@@ -17,7 +17,11 @@ export default function ProjectFilterTabs({
   counts = {},
 }) {
   return (
-    <div className="flex items-center gap-1.5 p-1.5 rounded-2xl ios-glass border border-[var(--border-glass)] shadow-sm max-w-fit overflow-x-auto">
+    <div 
+      role="tablist"
+      aria-label="Filter projects by category"
+      className="flex items-center gap-1.5 p-1.5 rounded-2xl ios-glass border border-[var(--border-glass)] shadow-sm max-w-fit overflow-x-auto"
+    >
       {TABS.map((tab) => {
         const isActive = activeTab === tab.id;
         const Icon = tab.icon;

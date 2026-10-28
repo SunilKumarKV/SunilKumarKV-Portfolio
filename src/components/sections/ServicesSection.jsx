@@ -46,8 +46,11 @@ export default function ServicesSection() {
 
       {/* Symmetrical 3-Card Grid (min-w-0 on each column item) */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6 items-stretch">
-        {SERVICES.map((service) => (
-          <div key={service.id} className="min-w-0 w-full flex">
+        {SERVICES.map((service, index) => (
+          <div 
+            key={service.id} 
+            className={`min-w-0 w-full flex ${index === 2 ? 'md:col-span-2 lg:col-span-1' : ''}`}
+          >
             <ServiceCard
               service={service}
               onSelectService={handleSelectService}

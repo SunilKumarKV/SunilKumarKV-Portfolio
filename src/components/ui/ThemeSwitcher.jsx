@@ -60,7 +60,7 @@ export default function ThemeSwitcher() {
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-60 rounded-2xl p-1.5 bg-slate-900/95 border border-white/15 backdrop-blur-2xl shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-150">
+        <div className="absolute left-0 sm:left-auto sm:right-0 mt-2 w-60 max-w-[calc(100vw-2rem)] rounded-2xl p-1.5 bg-slate-900/95 border border-white/15 backdrop-blur-2xl shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-150">
           <div className="px-3 py-2 border-b border-white/10 mb-1">
             <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
               Visual Atmosphere
