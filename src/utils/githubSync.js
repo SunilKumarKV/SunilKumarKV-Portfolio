@@ -3,7 +3,6 @@
  * Fetches public repositories from GitHub API for user "SunilKumarKV",
  * caches them in localStorage for 1 hour, filters for topic "portfolio",
  * and maps them to clean project objects.
- * Includes curated fallback mock projects if the API rate limit is reached.
  */
 
 import { FALLBACK_PROJECTS } from './githubFallbackData.js';
@@ -14,52 +13,40 @@ const GITHUB_USERNAME = 'SunilKumarKV';
 const CACHE_KEY = 'sunilcraft_github_portfolio_cache';
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 
-/**
- * Format repo name into clean human-readable title
- * e.g., "devwithsunil" -> "DevWithSunil", "owlreadme" -> "OwlReadme"
- */
 function formatProjectTitle(name) {
   if (!name) return 'Untitled Project';
   return name
     .split(/[-_]/)
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(' ');
 }
 
-/**
- * Clean and format tech stack from GitHub topics
- */
+const TECH_MAP = {
+  nodejs: 'Node.js',
+  nextjs: 'Next.js',
+  react: 'React',
+  tailwindcss: 'Tailwind CSS',
+  tailwind: 'Tailwind CSS',
+  typescript: 'TypeScript',
+  javascript: 'JavaScript',
+  vite: 'Vite',
+  fullstack: 'Full Stack',
+  ai: 'AI / ML',
+  'open-source': 'Open Source',
+  'developer-tools': 'DevTools',
+};
+
 function formatTechStack(topics = [], language = null) {
   const filtered = topics
-    .filter(t => t.toLowerCase() !== 'portfolio')
-    .map(t => {
-      const map = {
-        nodejs: 'Node.js',
-        nextjs: 'Next.js',
-        react: 'React',
-        tailwindcss: 'Tailwind CSS',
-        tailwind: 'Tailwind CSS',
-        typescript: 'TypeScript',
-        javascript: 'JavaScript',
-        vite: 'Vite',
-        fullstack: 'Full Stack',
-        ai: 'AI / ML',
-        'open-source': 'Open Source',
-        'developer-tools': 'DevTools',
-      };
-      return map[t.toLowerCase()] || t.charAt(0).toUpperCase() + t.slice(1);
-    });
+    .filter((t) => t && typeof t === 'string' && t.toLowerCase() !== 'portfolio')
+    .map((t) => TECH_MAP[t.toLowerCase()] || t.charAt(0).toUpperCase() + t.slice(1));
 
-  if (language && !filtered.some(t => t.toLowerCase() === language.toLowerCase())) {
+  if (language && !filtered.some((t) => t.toLowerCase() === language.toLowerCase())) {
     filtered.unshift(language);
   }
-
   return filtered.length > 0 ? filtered : ['Full Stack', 'React', 'JavaScript'];
 }
 
-/**
- * Maps raw GitHub repo item to clean portfolio project schema
- */
 export function mapGitHubRepoToProject(repo) {
   const topics = repo.topics || [];
   const techStack = formatTechStack(topics, repo.language);
@@ -74,7 +61,7 @@ export function mapGitHubRepoToProject(repo) {
     liveDemo: repo.homepage && repo.homepage.trim().length > 0 ? repo.homepage : null,
     github: repo.html_url,
     thumbnail,
-    updated: repo.updated_at 
+    updated: repo.updated_at
       ? new Date(repo.updated_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
       : 'Recent',
     updatedDateRaw: repo.updated_at,
@@ -84,25 +71,40 @@ export function mapGitHubRepoToProject(repo) {
   };
 }
 
+function getCachedProjects() {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === 'object' && Array.isArray(parsed.data) && parsed.data.length > 0) {
+      return parsed;
+    }
+  } catch {
+    // Ignore JSON parsing or storage read errors
+  }
+  return null;
+}
+
 /**
  * Fetch and sync GitHub repositories with 1-hour localStorage caching
  */
 export async function syncGitHubPortfolioRepos(options = {}) {
   const { forceRefresh = false } = options;
 
-  // 1. Check localStorage Cache
-  if (!forceRefresh && typeof window !== 'undefined') {
-    try {
-      const cachedRaw = localStorage.getItem(CACHE_KEY);
-      if (cachedRaw) {
-        const cached = JSON.parse(cachedRaw);
-        const age = Date.now() - (cached.timestamp || 0);
-        if (age < CACHE_TTL_MS && Array.isArray(cached.data) && cached.data.length > 0) {
-          return { projects: cached.data, fromCache: true, isRateLimited: false };
-        }
+  // 1. Check valid localStorage Cache (if not forcing refresh)
+  if (!forceRefresh) {
+    const cached = getCachedProjects();
+    if (cached && typeof cached.timestamp === 'number') {
+      const age = Date.now() - cached.timestamp;
+      if (age >= 0 && age < CACHE_TTL_MS) {
+        return {
+          projects: cached.data,
+          fromCache: true,
+          isRateLimited: false,
+          isFallback: false,
+        };
       }
-    } catch (cacheErr) {
-      console.warn('[GitHubSync] Failed to read from localStorage cache:', cacheErr);
     }
   }
 
@@ -114,11 +116,23 @@ export async function syncGitHubPortfolioRepos(options = {}) {
       headers: { Accept: 'application/vnd.github+json' },
     });
 
+    // Check for API Rate Limiting (403 or 429)
     if (response.status === 403 || response.status === 429) {
+      const cached = getCachedProjects();
+      if (cached) {
+        return {
+          projects: cached.data,
+          fromCache: true,
+          isRateLimited: true,
+          isFallback: false,
+          error: 'GitHub API rate limit reached. Displaying cached projects.',
+        };
+      }
       return {
         projects: FALLBACK_PROJECTS,
         fromCache: false,
         isRateLimited: true,
+        isFallback: true,
         error: 'GitHub API rate limit exceeded. Displaying curated fallback projects.',
       };
     }
@@ -131,13 +145,15 @@ export async function syncGitHubPortfolioRepos(options = {}) {
     if (!Array.isArray(repos)) throw new Error('Invalid GitHub API response payload');
 
     // 3. Filter for repos containing the topic "portfolio" (case-insensitive)
-    const filteredRepos = repos.filter(repo => {
+    const filteredRepos = repos.filter((repo) => {
+      if (!repo || typeof repo !== 'object') return false;
       if (!repo.topics || !Array.isArray(repo.topics)) return false;
-      return repo.topics.some(t => t.toLowerCase() === 'portfolio');
+      return repo.topics.some((t) => typeof t === 'string' && t.toLowerCase() === 'portfolio');
     });
 
     const cleanProjects = filteredRepos.map(mapGitHubRepoToProject);
-    const finalProjects = cleanProjects.length > 0 ? cleanProjects : FALLBACK_PROJECTS;
+    const isUsingFallback = cleanProjects.length === 0;
+    const finalProjects = isUsingFallback ? FALLBACK_PROJECTS : cleanProjects;
 
     // 4. Store in localStorage cache
     if (typeof window !== 'undefined' && finalProjects.length > 0) {
@@ -151,28 +167,30 @@ export async function syncGitHubPortfolioRepos(options = {}) {
       }
     }
 
-    return { projects: finalProjects, fromCache: false, isRateLimited: false };
+    return {
+      projects: finalProjects,
+      fromCache: false,
+      isRateLimited: false,
+      isFallback: isUsingFallback,
+    };
   } catch (error) {
     console.error('[GitHubSync] Sync failed, checking stale cache or fallback:', error);
-    
-    if (typeof window !== 'undefined') {
-      try {
-        const cachedRaw = localStorage.getItem(CACHE_KEY);
-        if (cachedRaw) {
-          const cached = JSON.parse(cachedRaw);
-          if (Array.isArray(cached.data) && cached.data.length > 0) {
-            return { projects: cached.data, fromCache: true, isRateLimited: false, error: error.message };
-          }
-        }
-      } catch (e) {
-        // ignore
-      }
+    const cached = getCachedProjects();
+    if (cached) {
+      return {
+        projects: cached.data,
+        fromCache: true,
+        isRateLimited: false,
+        isFallback: false,
+        error: error.message || 'Network sync failed. Displaying cached projects.',
+      };
     }
 
     return {
       projects: FALLBACK_PROJECTS,
       fromCache: false,
       isRateLimited: false,
+      isFallback: true,
       error: error.message || 'Unable to sync with GitHub API. Displaying fallback projects.',
     };
   }

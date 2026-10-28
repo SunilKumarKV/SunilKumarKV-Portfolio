@@ -9,11 +9,13 @@ import ProjectSkeleton from './ProjectSkeleton';
  */
 export default function OpenSourceSubGrid({
   repositories,
-  loading,
+  loading = false,
+  isLoading = false,
 }) {
+  const activeLoading = isLoading || loading;
   const [isExpanded, setIsExpanded] = useState(true);
 
-  if (!loading && (!repositories || repositories.length === 0)) {
+  if (!activeLoading && (!repositories || repositories.length === 0)) {
     return null;
   }
 
@@ -52,7 +54,7 @@ export default function OpenSourceSubGrid({
       {/* Grid Content */}
       {isExpanded && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in duration-300">
-          {loading ? (
+          {activeLoading ? (
             <>
               <ProjectSkeleton />
               <ProjectSkeleton />
