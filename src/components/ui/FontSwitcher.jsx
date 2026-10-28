@@ -11,6 +11,7 @@ export default function FontSwitcher() {
   const { fontFamily, setFontFamily, fonts, activeFont } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const triggerRef = useRef(null);
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -23,6 +24,19 @@ export default function FontSwitcher() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Keyboard accessibility: Close on Escape key
+  useEffect(() => {
+    if (!isOpen) return;
+    function handleKeyDown(e) {
+      if (e.key === 'Escape') {
+        setIsOpen(false);
+        triggerRef.current?.focus();
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
+
   const sansFonts = fonts.filter((f) => !f.isTerminal);
   const terminalFonts = fonts.filter((f) => f.isTerminal);
 
@@ -30,9 +44,12 @@ export default function FontSwitcher() {
     <div className="relative" ref={dropdownRef}>
       {/* Trigger Button */}
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Switch typography font family"
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
         className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-200 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/25 backdrop-blur-md transition-all duration-200 focus:outline-none"
       >
         {activeFont.isTerminal ? (
@@ -48,7 +65,11 @@ export default function FontSwitcher() {
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-72 max-w-[calc(100vw-2rem)] max-h-[85vh] overflow-y-auto rounded-2xl p-2 bg-slate-900/95 border border-white/15 backdrop-blur-2xl shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-150">
+        <div 
+          role="listbox"
+          aria-label="Typography font options"
+          className="absolute right-0 mt-2 w-72 max-w-[calc(100vw-2rem)] max-h-[85vh] overflow-y-auto rounded-2xl p-2 bg-slate-900/95 border border-white/15 backdrop-blur-2xl shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-150"
+        >
           <div className="px-3 py-2 border-b border-white/10 mb-1">
             <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
               Site-Wide Typography
@@ -69,9 +90,12 @@ export default function FontSwitcher() {
                 <button
                   key={f.id}
                   type="button"
+                  role="option"
+                  aria-selected={isSelected}
                   onClick={() => {
                     setFontFamily(f.id);
                     setIsOpen(false);
+                    triggerRef.current?.focus();
                   }}
                   className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all duration-150 text-left ${
                     isSelected
@@ -105,9 +129,12 @@ export default function FontSwitcher() {
                 <button
                   key={f.id}
                   type="button"
+                  role="option"
+                  aria-selected={isSelected}
                   onClick={() => {
                     setFontFamily(f.id);
                     setIsOpen(false);
+                    triggerRef.current?.focus();
                   }}
                   className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all duration-150 text-left ${
                     isSelected

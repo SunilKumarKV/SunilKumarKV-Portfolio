@@ -22,11 +22,19 @@ export default function App() {
       {/* Visual Atmosphere: Fixed AuroraBackground with Drifting Orbs and Architectural Dot Grid */}
       <AuroraBackground />
 
+      {/* Skip to Main Content Link for Keyboard and Screen Reader Accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2.5 focus:bg-electric-blue focus:text-white focus:rounded-xl focus:shadow-xl focus:font-mono focus:text-xs focus:font-semibold focus:outline-none focus:ring-2 focus:ring-white transition-all"
+      >
+        Skip to main content
+      </a>
+
       {/* Sticky Glass Navbar (iOS-grade frosted glass, 24px blur, 1px bottom border) */}
       <Navbar />
 
       {/* Main Content Sections (z-10 relative) */}
-      <main className="w-full relative z-10">
+      <main id="main-content" tabIndex={-1} className="w-full relative z-10 focus:outline-none">
         {/* 1. 12-Column Hero Section */}
         <Hero />
 

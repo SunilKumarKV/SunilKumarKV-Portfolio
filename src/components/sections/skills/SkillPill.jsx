@@ -31,6 +31,9 @@ export default function SkillPill({
         type="button"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        onFocus={() => setIsHovered(true)}
+        onBlur={() => setIsHovered(false)}
+        aria-label={`${skillName}${count > 0 ? `, used in ${count} repositories` : ''}`}
         style={{
           boxShadow: isHovered 
             ? `0 0 16px ${brandColor}40, inset 0 0 8px ${brandColor}20` 

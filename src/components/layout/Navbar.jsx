@@ -47,6 +47,18 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Keyboard accessibility: close mobile drawer on Escape
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [mobileMenuOpen]);
+
   const handleSmoothScroll = (e, href) => {
     e.preventDefault();
     setMobileMenuOpen(false);
@@ -155,9 +167,12 @@ export default function Navbar() {
         {/* Mobile Menu Toggle Button */}
         <div className="flex lg:hidden items-center space-x-2">
           <button
+            type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 border border-[var(--border-glass)] focus:outline-none"
-            aria-label="Toggle navigation menu"
+            className="p-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 border border-[var(--border-glass)] focus:outline-none focus-visible:ring-2 focus-visible:ring-electric-blue"
+            aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-navigation-drawer"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>

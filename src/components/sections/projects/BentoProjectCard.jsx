@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ExternalLink, Github, Star, GitFork, Sparkles, Layers } from 'lucide-react';
 
 export default function BentoProjectCard({ project, isFeatured = false, className = '' }) {
@@ -7,9 +7,18 @@ export default function BentoProjectCard({ project, isFeatured = false, classNam
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
   const [imgError, setImgError] = useState(false);
+  const [isReducedMotion, setIsReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setIsReducedMotion(mediaQuery.matches);
+    const handleChange = (e) => setIsReducedMotion(e.matches);
+    mediaQuery.addEventListener?.('change', handleChange);
+    return () => mediaQuery.removeEventListener?.('change', handleChange);
+  }, []);
 
   const handleMouseMove = (e) => {
-    if (!cardRef.current) return;
+    if (!cardRef.current || isReducedMotion) return;
     const rect = cardRef.current.getBoundingClientRect();
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
@@ -32,9 +41,9 @@ export default function BentoProjectCard({ project, isFeatured = false, classNam
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => { setIsHovered(false); setRotate({ x: 0, y: 0 }); }}
       style={{
-        transform: isHovered 
+        transform: !isReducedMotion && isHovered 
           ? `perspective(1000px) rotateX(${rotate.x.toFixed(2)}deg) rotateY(${rotate.y.toFixed(2)}deg) scale3d(1.015, 1.015, 1.015)`
-          : 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)',
+          : 'none',
         transition: isHovered ? 'transform 0.15s ease-out' : 'transform 0.5s ease-out',
       }}
       className={`group relative rounded-3xl p-6 transition-all duration-300 overflow-hidden flex flex-col justify-between ios-glass-card min-w-0 w-full ${
