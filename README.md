@@ -27,7 +27,6 @@ pnpm build
 # 4. Preview production build locally
 pnpm preview
 ```
-
 ---
 
 ## 🎨 Architecture & Design Highlights
