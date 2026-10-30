@@ -16,6 +16,7 @@ import SectionDivider from './components/ui/SectionDivider';
  * Standardized Apple-grade section rhythm (py-16 sm:py-20 lg:py-24)
  * with max-w-7xl / custom container constraints and section dividers.
  */
+
 export default function App() {
   return (
     <div className="min-h-screen relative selection:bg-electric-blue/30 selection:text-white transition-colors duration-300 overflow-x-hidden">
